@@ -1,0 +1,15 @@
+© by Gael Bringout, Researcher at Institute of Medical Engineering of University of Lübeck
+
+We would like to share the matlab packages and also the source code with you under following license terms and conditions: 
+You are allowed to copy and redistribute the material in any medium or format.
+You are allowed to remix, transform, and build upon the material.
+
+We want revoke these freedoms as long as you follow the license terms:
+You have to give appropriate credit, provide a link to this license, and indicate if changes were made. 
+You may do so in any reasonable manner, but not in any way that suggests the licensor endorses you or your use.
+You may not use the material for commercial purposes, only academic and research use is allowed. 
+If you remix, transform, or build upon the material, you must distribute your contributions under the same license as the original. 
+You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
+
+Disclaimer:
+Because the matlab package is licensed free of charge, there is no warranty for the packages, to the extent permitted by applicable law. Except when otherwise stated in writing the copyright holder provide the packages “as is” without warranty of any kind, either expressed or implied, including but not limited to, the implied warranties of merchantability and fitness for a particular purpose. The entire risk as to the quality and performance of the package is with you. Should the package provide defective, you assume the cost of all necessary serving, repair or correction. In no Event unless required by applicable law or agreed to in writing will any copyright holder who may modify and/or redistribute the package as permitted above, be liable to you for damages, including any general, special, incidental or consequential damages arising out of the use or inability to use the package (including but not limited to loss of data or data being rendered inaccurate or losses sustained by your or third parties or failure of the packages to operate with any other software), even if such holder has been advised of the possibility of such damages.  
