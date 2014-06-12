@@ -1,8 +1,7 @@
 # Coil Design #
 The repository contains many Matlab script used to design coils.
 The available technique is :
-* [BEM using stream function.](#BEM-stream)
-
+* [BEM using stream function.](#bem-stream-function-technique)
 ## BEM stream function technique ##
 Here, BEM formulation is used along with stream function to formulate the coil design as an optimization. 3 Basic examples are presented to make coils for [Magnetic Particle Imaging](http://en.wikipedia.org/wiki/Magnetic_particle_imaging) scanner according to an upcoming publication. The examples are:
 + A circular quadrupole,
