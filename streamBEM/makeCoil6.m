@@ -156,6 +156,7 @@ if strcmp(optimizationType,'standardTikhonov')
     spectrum = sort(s(:,1),'descend');
     subplot(3,3,9)
     semilogy(spectrum)
+    %figure; [reg_corner,rho,eta,reg_param] = l_curve(U,s,coil.btarget');
     [coil.x_lambda,~,~] = tikhonov(U,s,V,coil.btarget',reg);
     if coil.reduction
         %coil.s = retrieveCurrentVector2(coil.x_lambda,coil.subBoundaries);
@@ -182,7 +183,7 @@ elseif strcmp(optimizationType,'QP')
     disp('Quadratic Programming')
     % Optimisation parameter
 
-    H = coil.R;
+    H = coil.L;
     f = zeros(size(H,1),1);                
 
     % Linear Constraints
@@ -273,7 +274,7 @@ displayWire(wire);
 coil.B = coil.Cfull*coil.s;
 coil.p_dis = coil.s'*coil.Rfull*coil.s;
 coil.e_stored = 0.5*coil.s'*coil.Lfull*coil.s;
-
+dd
 %% Calculation of the field discritized coil
 % disp('Field calculation with the discritized model')
 % 
