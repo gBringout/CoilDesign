@@ -9,15 +9,11 @@
 
 %% Import meshing
 % If reduction = 1, the matrix system will be reduced, in order to set all
-% the border node to the same value, in order to respect the xxx criteria
+% the border node to the same value, in order to respect the divergence free criteria
 % i.e. the node vector will be reorgenized in order to have all the border
 % node on top, in order to facilitate the reduction of all the system
 
-%[coil.node,coil.triangle,coil.tri] = importMeshBlender('data\20x20_R100_H280.obj');
 [coil.listNode,coil.listTriangle,coil.tri] = importMeshBlender('./data/30x13_R145_D314.obj');
-%[coil.listNode,coil.listTriangle,coil.tri] = importMeshBlender('./data/2500_R145_D250.obj');
-%[coil.listNode,coil.listTriangle,coil.tri] = importMeshBlender('../data/BEM/mesh/blender/20x20_R400_H1600_meshRandom.obj');
-%[coil.node,coil.triangle,coil.tri] = importMeshBlender('data\75x28_R119_H280.obj');
 coil.center = [0 0 0];
 coil.reduction = 1;
 coil.rateIncreasingWire = 1;
@@ -27,11 +23,11 @@ addpath('..\SphericalHarmonics\')
 
 degreeMax = 15;
 orderMax = 15;
-rhoReference = 0.025; % radius of reference
+rhoReference = 0.05/2; % radius of reference
 rk = createTargetPointGaussLegendreAndRectangle7(rhoReference,degreeMax,orderMax);
 %% Then we habe to calculate the field in a given direction
 
-% define the target ampltiude
+% Initialize the target ampltiude
 bc(1).coefficient = zeros(degreeMax+1,orderMax+1);
 bs(1).coefficient = zeros(degreeMax+1,orderMax+1);
 bc(2).coefficient = zeros(degreeMax+1,orderMax+1);
@@ -39,32 +35,13 @@ bs(2).coefficient = zeros(degreeMax+1,orderMax+1);
 bc(3).coefficient = zeros(degreeMax+1,orderMax+1);
 bs(3).coefficient = zeros(degreeMax+1,orderMax+1);
 
-% Quadrupole
-%bc(1).coefficient(2,2) = targetAmplitude; % Quadrupole
-%bs(2).coefficient(2,2) = -targetAmplitude; % Quadrupole
-
-% Drive
+% define the target ampltiude
+targetCoil = 'DriveZ';
 bc(3).coefficient(1,1) = 0.003; % Drive Y
-%bc(1).coefficient(1,1) = 0.003; % Drive X
 
 B  = RebuildField7bis(bc,bs,rhoReference, rk,'sch');
-
-%targetCoil = 'dBzdx';
-%targetCoil = 'dBzdy';
-%targetCoil = 'dBzdz';
-%coil.btarget = [B(3,:)];
-
-%targetCoil = 'Quad';
-%coil.btarget = [B(1,:) B(2,:) B(3,:)];
-
-targetCoil = 'DriveZ';
 coil.btarget = [B(1,:) B(2,:) B(3,:)];
 
-%targetCoil = 'DriveX';
-%coil.btarget = [B(1,:) B(2,:) B(3,:)];
-
-%coil.btarget = [B(2,:)];
-%coil.error = 0.1;
 %DisplayFieldOnSphere( B,rk,'TargetField' )
 
 clear('B');
@@ -75,7 +52,7 @@ clear('B');
 coil.wireThickness = 0.00395; % (meter) Thickness of the conductor
 coil.wireWidth = 0.00395; % (meter) Thickness of the conductor
 coil.wireSurface = coil.wireThickness*coil.wireWidth; % in meter %5mmx5mm is equivalent to the number used in Timo's coil or the 7.5*7.5 litz wire
-coil.fillFactor = 0.5;
+coil.fillFactor = 1;
 coil.rhoCopper = 1.68*10^-8; % (Ohm*m) resistivity of the copper
 coil.rho = coil.rhoCopper*coil.fillFactor;
 coil.wireResistivity = coil.rhoCopper/coil.fillFactor;  % (Ohm*m) resistivity of the wire
@@ -113,5 +90,5 @@ coil.z_Value = coil.z_Start:coil.z_Step:coil.z_Stop;
 
 coil.current = 1;
 coil.sphere_radius = 0.025;
-coil.coil_radius = 0.1;
-coil.coil_length = 0.2;
+coil.coil_radius = 0.317/2;
+coil.coil_length = 0.49;

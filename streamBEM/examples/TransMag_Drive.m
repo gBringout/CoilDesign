@@ -9,14 +9,11 @@
 
 %% Import meshing
 % If reduction = 1, the matrix system will be reduced, in order to set all
-% the border node to the same value, in order to respect the xxx criteria
+% the border node to the same value, in order to respect the divergence free criteria
 % i.e. the node vector will be reorgenized in order to have all the border
 % node on top, in order to facilitate the reduction of all the system
 
-%[coil.node,coil.triangle,coil.tri] = importMeshBlender('data\20x20_R100_H280.obj');
 [coil.listNode,coil.listTriangle,coil.tri] = importMeshBlender('./data/41x61_R100_H400.obj');
-%[coil.listNode,coil.listTriangle,coil.tri] = importMeshBlender('../data/BEM/mesh/blender/20x20_R400_H1600_meshRandom.obj');
-%[coil.node,coil.triangle,coil.tri] = importMeshBlender('data\75x28_R119_H280.obj');
 coil.center = [0 0 0];
 coil.reduction = 1;
 coil.rateIncreasingWire = 1;
@@ -26,48 +23,25 @@ addpath('..\SphericalHarmonics\')
 
 degreeMax = 5;
 orderMax = 5;
-rhoReference = 0.04; % radius of reference
+rhoReference = 0.08/2; % radius of reference
 rk = createTargetPointGaussLegendreAndRectangle7(rhoReference,degreeMax,orderMax);
 %% Then we habe to calculate the field in a given direction
 
-% define the target ampltiude
-targetAmplitude = 0.5*rhoReference;
-for i=1:7
-    bc(1).coefficient(i,:) = zeros(1,7);
-    bs(1).coefficient(i,:) = zeros(1,7);
-    bc(2).coefficient(i,:) = zeros(1,7);
-    bs(2).coefficient(i,:) = zeros(1,7);
-    bc(3).coefficient(i,:) = zeros(1,7);
-    bs(3).coefficient(i,:) = zeros(1,7);
-end
-%bs(2).coefficient(3,3) = 10^-5; % shimming
-%bc(2).coefficient(1,1) = 15*10^-3; % Drive Y
-%bs(3).coefficient(2,2) = 1*rhoReference; % MRI gradient Y
-%bc(3).coefficient(2,2) = 1*rhoReference; % MRI gradient X
-%bc(3).coefficient(2,1) = targetAmplitude; % MRI gradient X
-% Quadrupole
-%bc(1).coefficient(2,2) = targetAmplitude; % Quadrupole
-%bs(2).coefficient(2,2) = -targetAmplitude; % Quadrupole
+% Initialize the target ampltiude
+bc(1).coefficient = zeros(degreeMax+1,orderMax+1);
+bs(1).coefficient = zeros(degreeMax+1,orderMax+1);
+bc(2).coefficient = zeros(degreeMax+1,orderMax+1);
+bs(2).coefficient = zeros(degreeMax+1,orderMax+1);
+bc(3).coefficient = zeros(degreeMax+1,orderMax+1);
+bs(3).coefficient = zeros(degreeMax+1,orderMax+1);
 
-% Drive
+% Drive Y
+targetCoil = 'DriveY';
 bc(2).coefficient(1,1) = 0.015; % Drive
 
 B  = RebuildField7bis(bc,bs,rhoReference, rk,'sch');
-
-%targetCoil = 'dBzdx';
-%targetCoil = 'dBzdy';
-%targetCoil = 'dBzdz';
-%coil.btarget = [B(3,:)];
-
-%targetCoil = 'Quad';
-%coil.btarget = [B(1,:) B(2,:) B(3,:)];
-
-targetCoil = 'DriveY';
-coil.btarget = [B(2,:)];
 coil.btarget = [B(1,:) B(2,:) B(3,:)];
 
-%coil.btarget = [B(2,:)];
-%coil.error = 0.1;
 %DisplayFieldOnSphere( B,rk,'TargetField' )
 
 clear('B');
@@ -98,20 +72,22 @@ coil.rateIncreasingWire = 2;
 %% Set the variable for the Field calculation
 
 % X position in meter
-x_Start =-0.120;%0.136
-x_Stop = 0.120;
-x_Step = 0.001;
-x_Value = x_Start:x_Step:x_Stop;
+coil.x_Start =-0.120;%0.136
+coil.x_Stop = 0.120;
+coil.x_Step = 0.01;
+coil.x_Value = coil.x_Start:coil.x_Step:coil.x_Stop;
 % Y position in meter
-y_Start = -0.120;
-y_Stop = 0.120;
-y_Step = 0.001;
-y_Value = y_Start:y_Step:y_Stop;
+coil.y_Start = -0.120;
+coil.y_Stop = 0.120;
+coil.y_Step = 0.01;
+coil.y_Value = coil.y_Start:coil.y_Step:coil.y_Stop;
 % Z position in meter
-z_Start =-0.002;
-z_Stop = 0.002;
-z_Step = 0.002;
-z_Value = z_Start:z_Step:z_Stop;
+coil.z_Start =-0.002;
+coil.z_Stop = 0.002;
+coil.z_Step = 0.002;
+coil.z_Value = coil.z_Start:coil.z_Step:coil.z_Stop;
 
-current = 1;
-sphere_radius = 0.025;
+coil.current = 1;
+coil.sphere_radius = 0.025;
+coil.coil_radius = 0.1;
+coil.coil_length = 0.2;

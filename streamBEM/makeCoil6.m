@@ -8,9 +8,9 @@ addpath('.\displayFunctions');
 addpath('.\otherFunctions');
 addpath(genpath('..\..\SphericalHarmonics\'));
 
-%TransMag_Quadrupole
+TransMag_Quadrupole
 %TransMag_Drive
-TransMag_PlanarDrive
+%TransMag_PlanarDrive
 
 
 if strcmp(optimizationType,'standardTikhonov') || strcmp(optimizationType,'generalizedTikhonov')
