@@ -1,6 +1,6 @@
 # Coil Design #
 The repository contains many Matlab script used to design coils.
-The available technique is :
+The available technique is:
 * [BEM using stream function.](#bem-stream-function-technique)
 
 ## BEM stream function technique ##
@@ -9,11 +9,14 @@ Here, BEM formulation is used along with stream function to formulate the coil d
 + A circular drive coil,
 + A planar drive coil.
 
-To works this script required 3 externals scripts:
+### Instalation ###
+To work, this script required 3 externals scripts:
 * [SphericalHamornics](https://github.com/gBringout/SphericalHarmonics)
 * [regu](http://www.imm.dtu.dk/~pcha/Regutools/) package from C Hansen for the Tikhonov implementation
 * [OPTI TOOLBOX](http://www.i2c2.aut.ac.nz/Wiki/OPTI/)  from J. Currie for the QP implementation 
 
+To start, you have to adapt BEM6 to your installation, and then run it.
+The definition of the wanted coils is done in a separate files. One files per coil.
 
-## Contributing to it ##
+# Contributing #
 You are welcome to contribute to this repository. Please read the associated license.
