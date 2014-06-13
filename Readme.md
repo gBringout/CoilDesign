@@ -15,7 +15,7 @@ To work, this script required 3 externals scripts:
 * [regu](http://www.imm.dtu.dk/~pcha/Regutools/) package from C Hansen for the Tikhonov implementation
 * [OPTI TOOLBOX](http://www.i2c2.aut.ac.nz/Wiki/OPTI/)  from J. Currie for the QP implementation 
 
-To start, you have to adapt BEM6 to your installation, and then run it.
+To start, you have to adapt streamBEM/makeCoil6.m to your installation, and then run it.
 The definition of the wanted coils is done in a separate files. One files per coil.
 
 # Contributing #
