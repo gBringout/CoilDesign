@@ -13,7 +13,7 @@
 % i.e. the node vector will be reorgenized in order to have all the border
 % node on top, in order to facilitate the reduction of all the system
 
-[coil.listNode,coil.listTriangle,coil.tri] = importMeshBlender('./data/26x95_R165_H250.obj');
+[coil.listNode,coil.listTriangle,coil.tri] = importMeshBlender('./data/26x95_R165_H250_2.obj');
 coil.center = [0 0 0];
 coil.reduction = 1;
 coil.rateIncreasingWire = 1;
@@ -37,8 +37,8 @@ bs(3).coefficient = zeros(degreeMax+1,orderMax+1);
 
 % Quadrupole
 targetCoil = 'Quad';
-bc(1).coefficient(2,2) = targetAmplitude; % Quadrupole
-bs(2).coefficient(2,2) = -targetAmplitude; % Quadrupole
+bc(1).coefficient(2,2) = 0.5*rhoReference; % Quadrupole
+bs(2).coefficient(2,2) = -0.5*rhoReference; % Quadrupole
 
 B  = RebuildField7bis(bc,bs,rhoReference, rk,'sch');
 coil.btarget = [B(1,:) B(2,:) B(3,:)];
@@ -53,7 +53,7 @@ clear('B');
 coil.wireThickness = 0.006; % (meter) Thickness of the conductor
 coil.wireWidth = 0.006; % (meter) Thickness of the conductor
 coil.wireSurface = coil.wireThickness*coil.wireWidth; % in meter %5mmx5mm is equivalent to the number used in Timo's coil or the 7.5*7.5 litz wire
-coil.fillFactor = 1;
+coil.fillFactor = 0.5;
 coil.rhoCopper = 1.68*10^-8; % (Ohm*m) resistivity of the copper
 coil.rho = coil.rhoCopper*coil.fillFactor;
 coil.wireResistivity = coil.rhoCopper/coil.fillFactor;  % (Ohm*m) resistivity of the wire
@@ -61,7 +61,7 @@ coil.wireResistivity = coil.rhoCopper/coil.fillFactor;  % (Ohm*m) resistivity of
 %% Part to calculate
 optimizationType = 'QP';
 calculateR = 1;
-calculateL = 0;
+calculateL = 1;
 calculateLwp = 0;
 
 coil.startingWireNumber = 22;
