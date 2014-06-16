@@ -274,7 +274,7 @@ displayWire(wire);
 coil.B = coil.Cfull*coil.s;
 coil.p_dis = coil.s'*coil.Rfull*coil.s;
 coil.e_stored = 0.5*coil.s'*coil.Lfull*coil.s;
-dd
+
 %% Calculation of the field discritized coil
 % disp('Field calculation with the discritized model')
 % 
