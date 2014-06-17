@@ -54,7 +54,6 @@ coil.wireWidth = 0.0078; % (meter) Thickness of the conductor
 coil.wireSurface = coil.wireThickness*coil.wireWidth; % in meter %5mmx5mm is equivalent to the number used in Timo's coil or the 7.5*7.5 litz wire
 coil.fillFactor = 0.5;
 coil.rhoCopper = 1.68*10^-8; % (Ohm*m) resistivity of the copper
-coil.rho = coil.rhoCopper*coil.fillFactor;
 coil.wireResistivity = coil.rhoCopper/coil.fillFactor;  % (Ohm*m) resistivity of the wire
 
 %% Part to calculate
