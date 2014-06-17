@@ -23,16 +23,18 @@ elseif nbrBorderNode == 2
     % Here we replace the whole equation just by one. As stated by Peeren
     % on page 63, 'all the value are the same' so we can just keep one
     % equation per boundary condition
-    M0 = M(totalNbrNodeOnBoundaries+1:end,totalNbrNodeOnBoundaries+1:end);
     
-    M1 = M(1,totalNbrNodeOnBoundaries+1:end);
-    M2 = M(1,nbrNodeOnBoundary1+1);
-    M3 = M(1,1);
-    M4 = M(totalNbrNodeOnBoundaries+1,totalNbrNodeOnBoundaries+1:end);
-    M5 = M(nbrNodeOnBoundary1+1,nbrNodeOnBoundary1+1);
-    M6 = M(nbrNodeOnBoundary1+1,1);
-    M7 = M(totalNbrNodeOnBoundaries+1:end,totalNbrNodeOnBoundaries+1);
-    M8 = M(totalNbrNodeOnBoundaries+1:end,1);
+    M1 = M(nbrNodeOnBoundary1,totalNbrNodeOnBoundaries+1:end);
+    M2 = M(nbrNodeOnBoundary1,nbrNodeOnBoundary1+nbrNodeOnBoundary2);
+    M3 = M(nbrNodeOnBoundary1,nbrNodeOnBoundary1);
+    
+    M4 = M(nbrNodeOnBoundary1+nbrNodeOnBoundary2,totalNbrNodeOnBoundaries+1:end);
+    M5 = M(nbrNodeOnBoundary1+nbrNodeOnBoundary2,nbrNodeOnBoundary1+nbrNodeOnBoundary2);
+    M6 = M(nbrNodeOnBoundary1+nbrNodeOnBoundary2,nbrNodeOnBoundary1);
+    
+    M0 = M(totalNbrNodeOnBoundaries+1:end,totalNbrNodeOnBoundaries+1:end);
+    M7 = M(totalNbrNodeOnBoundaries+1:end,nbrNodeOnBoundary1+nbrNodeOnBoundary2);
+    M8 = M(totalNbrNodeOnBoundaries+1:end,nbrNodeOnBoundary1);
     
     MR = [[M3 M2 M1];[M6 M5 M4];[M8 M7 M0]];
 else

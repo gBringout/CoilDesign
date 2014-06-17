@@ -15,9 +15,9 @@ elseif nbrBorderNode == 2
     nbrNodeOnBoundary2 = size(subBoundaries(2).node,1);
     totalNbrNodeOnBoundaries = nbrNodeOnBoundary1+nbrNodeOnBoundary2;
     
-    M0 = M(:,totalNbrNodeOnBoundaries+1:nonReducedSize);
-    M1 = M(:,nbrNodeOnBoundary1+1);
-    M2 = M(:,1);
+    M0 = M(:,totalNbrNodeOnBoundaries+1:end);
+    M1 = M(:,nbrNodeOnBoundary1+nbrNodeOnBoundary2);
+    M2 = M(:,nbrNodeOnBoundary1);
     MR = [M2 M1 M0];     
 else
     disp('error : no function to reduce matrix with 3 sub-boundaries');
