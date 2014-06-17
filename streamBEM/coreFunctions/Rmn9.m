@@ -5,13 +5,15 @@ function [R] = Rmn9(node, triangle,basis,rho,t)
 % Equation come from the thesis of Michael Poole "Improved Equipment and
 % Techniques for Dynamic Shimming in High Field MRI
 % page 66
+% and G. N. Peeren, “Stream function approach for determining optimal surface
+% currents,”
 %
 % Node : a matrix with the 3d position of each Node (in meter)
 % Triangle : a matrix linking 3 Node together to form a triangle
 % nodeLinkToTriangle : structure with the triangle linked to the same Node
 %
 % Changelog :
-% Based on Rmn6 with an exterbal basis function
+% Based on Rmn6 with an external basis function
 % Based on Rmn7 with the use of the new structure of node and triangle
 % Based on Rmn8 with the use of a new structure for the basis
 

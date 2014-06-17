@@ -2,23 +2,15 @@ function [Cx,Cy,Cz] = Cn7(node,triangle,basis,r)
 
 % This file aim at calculating the so called "Cn matrix"
 %
-% Equation come from the thesis of Michael Poole "Improved Equipment and
-% Techniques for Dynamic Shimming in High Field MRI
-% page 63 and 64
 %
 % node : a matrix with the 3d position of each node (in meter)
 % triangle : a matrix linking 3 node together to form a triangle
-% nodeLinkToTriangle : structure with the triangle linked to the same node
+% basis : structure with the basis vector and the related informations
 % r : the target point
-% type : the type of the C matrix :
-% 'bx' : calculate the field in the x direction
-% 'by' : calculate the field in the y direction
-% 'bz' : calculate the field in the z direction
-% 'bx+by' : calculate the field in the x+y direction
 
 %ChangeLog
 % v5: adapted to the new structure of node and triangle
-% v7 try to fix the mistake linked to the z gradient coil
+% v7: clean the code
 
 tic;
 

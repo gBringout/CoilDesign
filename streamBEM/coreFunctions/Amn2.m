@@ -6,16 +6,7 @@ function [AX,AY,AZ] = Amn2(node_1, triangle_1, basis_1,node_2, triangle_2, basis
 % triangle : a matrix linking 3 node together to form a triangle
 % basis : a matrix with the description of the basis function
 %
-% node_1 = shield.node;
-% triangle_1 = shield.triangle;
-% basis_1 = shield.basis;
-% node_2 = coil.node;
-% triangle_2 = coil.triangle;
-% basis_2 = coil.basis;
-%
-%
-%changelog : based on Lmn11 and Cn6
-% Changelog: try to make the induction stuff working
+% changelog : based on Lmn11 and Cn6, for a cleaner version using the basis structure
 
 
 

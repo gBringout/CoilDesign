@@ -1,6 +1,14 @@
 function [Lwp] = Laplacian3(node, triangle)   
+% This file aim at calculating the Laplacian of a mesh
+%
+%
+% node : a matrix with the 3d position of each node (in meter)
+% triangle : a matrix linking 3 node together to form a triangle
 
-% h is something like the average length between to point of the mesh
+%ChangeLog
+% v3: clean the code
+
+% h is the average length between to point of the mesh
 nbrSegment = 0;
 for t=1:size(triangle,2)
     nbrSegment = nbrSegment + 1;

@@ -19,7 +19,7 @@ else
 	typeCalculation = 'differentSurfaces';
 end
 
-[~,~,ck] = TriGaussPoints(2);
+[~,~,ck] = triGaussPoints(2);
 cl = ck;
 
 %%
