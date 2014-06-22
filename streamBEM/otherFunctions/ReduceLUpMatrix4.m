@@ -24,29 +24,30 @@ if nbrBorderVertical == 2 && nbrBorderHorizontal == 2 %case of the cylinder
     % equation per boundary condition
 
     %M1 = sum(M(1:95,190+1:2470),1);
-    M1 = M(1,nbrNodeOnBoundaryH+1:nonReducedSize(2)); %ok
-    M2 = M(1,nbrNodeOnBoundaryH1+1); %ok
-    M3 = M(1,1); %ok
+    M1 = M(nbrNodeOnBoundaryV1,nbrNodeOnBoundaryH1 + nbrNodeOnBoundaryH2 + 1:end); %ok
+    M2 = M(nbrNodeOnBoundaryV1,nbrNodeOnBoundaryH1 + nbrNodeOnBoundaryH2); %ok
+    M3 = M(nbrNodeOnBoundaryV1,nbrNodeOnBoundaryH1); %ok
     
-    M4 = M(nbrNodeOnBoundaryV1+1,nbrNodeOnBoundaryH+1:nonReducedSize(2)); %ok
-    M5 = M(nbrNodeOnBoundaryV1+1,nbrNodeOnBoundaryH1+1); %ok
-    M6 = M(nbrNodeOnBoundaryV1+1,1); %ok
+    M4 = M(nbrNodeOnBoundaryV1+nbrNodeOnBoundaryV2,nbrNodeOnBoundaryH1 + nbrNodeOnBoundaryH2 + 1:end); %ok
+    M5 = M(nbrNodeOnBoundaryV1+nbrNodeOnBoundaryV2,nbrNodeOnBoundaryH1 + nbrNodeOnBoundaryH2); %ok
+    M6 = M(nbrNodeOnBoundaryV1+nbrNodeOnBoundaryV2,nbrNodeOnBoundaryH1); %ok
     
     
-    M0 = M(nbrNodeOnBoundaryV+1:nonReducedSize(1),nbrNodeOnBoundaryH+1:nonReducedSize(2));
-    M7 = M(nbrNodeOnBoundaryV+1:nonReducedSize(1),nbrNodeOnBoundaryH1+1); %ok
-    M8 = M(nbrNodeOnBoundaryV+1:nonReducedSize(1),1); %ok
+    M0 = M(nbrNodeOnBoundaryV1+nbrNodeOnBoundaryV2+1:end,nbrNodeOnBoundaryH1 + nbrNodeOnBoundaryH2 + 1:end);
+    M7 = M(nbrNodeOnBoundaryV1+nbrNodeOnBoundaryV2+1:end,nbrNodeOnBoundaryH1 + nbrNodeOnBoundaryH2); %ok
+    M8 = M(nbrNodeOnBoundaryV1+nbrNodeOnBoundaryV2+1:end,nbrNodeOnBoundaryH1); %ok
     
     MR = [[M3 M2 M1];[M6 M5 M4];[M8 M7 M0]];
 elseif nbrBorderVertical == 0 && nbrBorderHorizontal == 2
+    
     nonReducedSize = size(M,2);
     nbrNodeOnBoundary1 = size(subBoundariesHorizontal(1).node,1);
     nbrNodeOnBoundary2 = size(subBoundariesHorizontal(2).node,1);
     totalNbrNodeOnBoundaries = nbrNodeOnBoundary1+nbrNodeOnBoundary2;
     
-    M0 = M(:,totalNbrNodeOnBoundaries+1:nonReducedSize);
-    M1 = M(:,nbrNodeOnBoundary1+1);
-    M2 = M(:,1);
+    M0 = M(:,nbrNodeOnBoundary1+nbrNodeOnBoundary2+1:end);
+    M1 = M(:,nbrNodeOnBoundary1+nbrNodeOnBoundary2);
+    M2 = M(:,nbrNodeOnBoundary1);
     MR = [M2 M1 M0];     
 else
     disp('error : no function to reduce matrix with 1,3,... or inequalsub-boundaries');
