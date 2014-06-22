@@ -106,39 +106,6 @@ for i = 1:size(phiContour,1)
     end
 end
 %displayWireAsPoint(phiLevel);
-%% To correct the biplanar
-% displayWireAsPoint(phiLevel(2));
-% displayWire(phiLevel);
-% phiLevelHand = phiLevel;
-% displayWire(phiLevelHand);
-% phiLevelHand(16).Coord = 1
-% xlim([-0.2 0.2])
-% ylim([-0.3 0.3])
-% zlim([-0.3 0.3])
-% 
-% j=16;
-% % Choose the first column where it start to be shitty
-% for i=7:size(phiLevelHand(j).Coord,2)-1
-%     %sort by the smaller z
-%     [~,index] = max(phiLevelHand(j).Coord(3,i:end));
-%     buffer = phiLevelHand(j).Coord(:,i);
-%     phiLevelHand(j).Coord(:,i) = phiLevelHand(j).Coord(:,i+index-1);
-%     phiLevelHand(j).Coord(:,i+index-1) = buffer;
-% end
-% phiLevelHand(j).Coord(:,i+2) = phiLevelHand(j).Coord(:,1);
-% displayWire(phiLevelHand(j));
-% 
-% j=8;
-% % Choose the last column where it start to be good
-% for i=8:-1:1
-%     %sort by the smaller z
-%     [~,index] = min(phiLevelHand(j).Coord(3,1:i));
-%     buffer = phiLevelHand(j).Coord(:,i);
-%     phiLevelHand(j).Coord(:,i) = phiLevelHand(j).Coord(:,index);
-%     phiLevelHand(j).Coord(:,index) = buffer;
-% end
-% phiLevelHand(j).Coord(:,size(phiLevelHand(j).Coord,2)+1) = phiLevelHand(j).Coord(:,1);
-% displayWire(phiLevelHand(j));
 %%
 % Sort the point into wire
 %
