@@ -56,6 +56,6 @@ streamBEM/otherFunctions/retrieveCurrentVector.m
 streamBEM/otherFunctions/retrieveCurrentVector2.m
 streamBEM/coreFunctions/Amn1.m
 streamBEM/DesignedCoil_input.fastHenry.inp
-streamBEM/makeCoilWithShield3.m
+streamBEM/makeCoilWithShield4.m
 streamBEM/examples/DY_p_ShieldMPI.m
 streamBEM/examples/DY_shielding_TransMagConf_old.m
