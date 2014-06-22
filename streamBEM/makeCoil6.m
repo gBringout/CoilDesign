@@ -8,10 +8,10 @@ addpath('.\displayFunctions');
 addpath('.\otherFunctions');
 addpath(genpath('..\..\SphericalHarmonics\'));
 
-TransMag_Quadrupole
+%TransMag_Quadrupole
 %TransMag_Drive
 %TransMag_PlanarDrive
-
+MRI_GY
 
 if strcmp(optimizationType,'standardTikhonov') || strcmp(optimizationType,'generalizedTikhonov')
     % Please download the regularization tools of: http://www.imm.dtu.dk/~pcha/Regutools/
@@ -281,7 +281,7 @@ coil.e_stored = 0.5*coil.s'*coil.Lfull*coil.s;
 [coil.Bx,coil.By,coil.Bz] = Field2(wire,coil.current,coil.x_Value,coil.y_Value,coil.z_Value);
 % Babs = sqrt(Bx.^2+By.^2+Bz.^2);
 DisplayField(coil.Bx,coil.By,coil.Bz,coil.x_Value,coil.y_Value,coil.z_Value,-40*10^-6,40*10^-6);
-if strcmpi(targetCoil,'Quad')
+if strcmpi(targetCoil,'Quad') || strcmpi(targetCoil,'dBzdy')
     [gradientLinearity,gradientValueCenter] = Linearity(coil.Bx,coil.By,coil.Bz,coil.sphere_radius,coil.x_Value,coil.y_Value,coil.z_Value);
     procentPlane = [0.01,0.03,0.05,0.08,0.10,0.15];
     procentVolume = 0.05;
