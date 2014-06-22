@@ -13,7 +13,7 @@
 % i.e. the node vector will be reorgenized in order to have all the border
 % node on top, in order to facilitate the reduction of all the system
 
-[coil.listNode,coil.listTriangle,coil.tri] = importMeshBlender('./data/26x95_R165_H250_2.obj');
+[coil.listNode,coil.listTriangle,coil.tri] = importMeshWavefront('./data/26x95_R165_H250_2.obj');
 coil.center = [0 0 0];
 coil.reduction = 1;
 coil.rateIncreasingWire = 1;

@@ -1,10 +1,6 @@
-function [node,triangle,tri] = importMeshBlender(filename)
-% Read an single OBJ object exported by Blender
-% and meshed with triangular elements
-
-if nargin < 1
-    filename = 'data\20x20_R135_H400.obj';
-end
+function [node,triangle,tri] = importMeshWavefront(filename)
+% Read an single OBJ object exported by Blender or 3DSmax for exemple
+% This has to be a mesh made with triangular elements
 
 fprintf('Using file %s \n',filename)
 fid = fopen(filename); %Open the file
