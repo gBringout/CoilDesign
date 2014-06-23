@@ -1,36 +1,18 @@
+%clear all;
+%close all;
 
-clear all;
-close all;
 % Coding rules :
 % Function start with a Capital letter
 % variable start with a lower-case letter
-%    but : only the MATRIX used for matrix calculation are completly named in CAPITAL
+% but : only the MATRIX used for matrix calculation are completly named in CAPITAL
+
 
 %% Import meshing
-% From 3DSmax you export an ASCI files (*.ASE)
-% in this files, you have to find the "*MESH_VERTEX_LIST" and
-% "*MESH_FACE_LIST". You have to edit the MESH_VERTEX_LIST in order to
-% extract all the coordinate
-% example : 			*MESH_VERTEX    0	-3.2961	0.7127	-1.4146
-% Here "0" is the node number (the 0th node here)
-% the "-3.2961" is the x coordinate of the 0th node
-% the "0.7127" is the y coordinate of the 0th node
-% the "-1.4146" is the z coordinate of the 0th node
-%
-% Put them all in a matlab matrix /named like "node", which will look like : -3.2961	0.7127	-1.4146
-% Then, do the same with the face. One line looks like :
-% *MESH_FACE_LIST {
-% 			*MESH_FACE    0:    A:    0 B:   19 C:   18 AB:    0 BC:    1 CA:    1	 *MESH_SMOOTHING 4 	*MESH_MTLID 2
-% So, here , the 0th face has the nodes 0, 19 and 18 has node
-% So we have a matrix with : 0 19 18
-% But Matlab start the indexation at 1, not at 0. So we have to add one to
-% this matrix to have (triangle = triangle +1):
-% 1 20 19
-% 
-% Then we build the Matlab stuff :
-% tri = TriRep(triangle,node(:,1),node(:,2),node(:,3));
-% and then display it : trimesh(tri);
-%
+% If reduction = 1, the matrix system will be reduced, in order to set all
+% the border node to the same value, in order to respect the divergence free criteria
+% i.e. the node vector will be reorgenized in order to have all the border
+% node on top, in order to facilitate the reduction of all the system
+
 [shield.listNode,shield.listTriangle,shield.tri] = importMeshWavefront('./data/20x20_R180_H400.obj');
 
 shield.center = [0 0 0];
