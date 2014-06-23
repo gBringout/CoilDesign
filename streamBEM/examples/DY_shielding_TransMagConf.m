@@ -36,7 +36,6 @@ targetVolumeType = 'sphereSH';%'cylinder_xy'; %'sphere';%
 targetVolumeRayon = 0.05;
 % We first define the range and step
 
-addpath('..\SphericalHarmonics\')
 
 degreeMax = 10;
 orderMax = 10;
@@ -47,14 +46,6 @@ calculateL = 1;
 calculateLwp = 0;
 calculateA = 0;
 
-%% Reduction
-% If reduction = 1, the matrix system will be reduced, in order to set all
-% the border node to the same value, in order to respect the xxx criteria
-% i.e. the node vector will be reorgenised in order to have all the border
-% node on top, in order to facilitate the reduction of all the system
-% matrix
-% all the
-reduction = 0; %original 1
 %% In order to calculate the resistance matrix, we have to providfe some data :
 
 % For the coil
@@ -80,17 +71,7 @@ shield.skinDepth = sqrt(2*shield.rhoCopper/(shield.muCopper*2*pi*freq));
 shield.wireThickness = 4*shield.skinDepth; % (meter) Thickness of the shield. Should be 4*skin depth
 %shield.rho = shield.rhoCopper*shield.fillFactor;
 shield.wireResistivity = shield.rhoCopper;  % (Ohm*m) resistivity of the wire
-%shield.wireResistance = shield.wireConductivity/(shield.wireSurface); %Ohm.m
-%shield.wireConductivity = shield.wireSurface*shield.wireResistance;
 
-
-%% Then we habe to calculate the field in a given direction
-%fieldDirection = '';
-%targetFieldType = 'SH';% 'field' or 'SH'
-%amplitude = 0.015;%
-%amplitudeBx = 0*amplitude;
-%amplitudeBy = 1*amplitude;
-%amplitudeBz = 0*amplitude;
 
 for i=1:7
     bc(1).coefficient(i,:) = zeros(1,7);
@@ -100,44 +81,13 @@ for i=1:7
     bc(3).coefficient(i,:) = zeros(1,7);
     bs(3).coefficient(i,:) = zeros(1,7);
 end
-%bs(2).coefficient(3,3) = 10^-5; % shimming
 bc(2).coefficient(1,1) = 15*10^-3; % Drive Y
-%bc(1).coefficient(2,2) = 10^-5; %
-%bs(2).coefficient(2,2) = 10^-5; %
 B  = RebuildField7bis(bc,bs,rhoReference, rk, 'sch');
-%coil.btarget = [B(1,:) B(2,:) B(3,:)];
 
 targetCoil = 'DriveY';
-%coil.btarget = [B(2,:)];
 coil.btarget = [B(1,:) B(2,:) B(3,:)];
-coil.error = 0.25;
-%DisplayFieldOnSphere( B,rk,'TargetField' )
-clear('B');
-
-% 
-% %% we need some criteria to make the discretisazion into wire
-% wireThickness = t + 0.001; % in meter, typiccally the maximum thickness of a wire including montage impressition
- startingWireNumber = 12;
-% %% Set the variable for the Field calculation
-% 
-% % X la position, en metre
-% x_Start =-0.1;
-% x_Stop = 0.1;
-% x_Step = 0.005;
-% x_Value = x_Start:x_Step:x_Stop;
-% % Y la position, en metre
-% y_Start = -0.1;
-% y_Stop = 0.1;
-% y_Step = 0.005;
-% y_Value = y_Start:y_Step:y_Stop;
-% % Z la position, en metre
-% z_Start =-0.1;
-% z_Stop = 0.1;
-% z_Step = 0.005;
-% z_Value = z_Start:z_Step:z_Stop;
-% 
-% current = 100;
-% sphere_radius = 0.025;
 
 
 optimizationType = 'QP';
+coil.error = 0.25;
+clear('B');
