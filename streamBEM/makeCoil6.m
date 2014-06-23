@@ -8,10 +8,10 @@ addpath('.\displayFunctions');
 addpath('.\otherFunctions');
 addpath(genpath('..\..\SphericalHarmonics\'));
 
-%TransMag_Quadrupole
+TransMag_Quadrupole
 %TransMag_Drive
 %TransMag_PlanarDrive
-MRI_GY
+%MRI_GY
 
 if strcmp(optimizationType,'standardTikhonov') || strcmp(optimizationType,'generalizedTikhonov')
     % Please download the regularization tools of: http://www.imm.dtu.dk/~pcha/Regutools/
@@ -256,7 +256,7 @@ elseif strcmp(optimizationType,'QP')
     % Solve the QP problem
     [coil.s_reduced,fval,exitflag,info] = solve(Opt);
     if coil.reduction
-        coil.s = retrieveCurrentVector2(coil.s_reduced,coil.subBoundaries);
+        coil.s = retrieveCurrentVector3(coil.s_reduced,coil.subBoundaries,optimizationType);
     else
         coil.s = coil.s_reduced;
     end
