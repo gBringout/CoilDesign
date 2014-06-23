@@ -14,37 +14,40 @@
 % node on top, in order to facilitate the reduction of all the system
 
 [shield.listNode,shield.listTriangle,shield.tri] = importMeshWavefront('./data/20x20_R180_H400.obj');
-
 shield.center = [0 0 0];
 shield.reduction = 1;
-shield.maxMeshSize = 0.24; % 6 cm for the grob meshing
-shield.nbrNodeToBorder = 6; %With Blender, their is sometime some with 5 connection. This can be corrected in the mesh
-shield.distanceBetween2Wire = 0.1;
 shield.rateIncreasingWire = 1;
 
 [coil.listNode,coil.listTriangle,coil.tri] = importMeshWavefront('./data/20x20_R119_H280.obj');
-
 coil.center = [0 0 0];
 coil.reduction = 1;
-coil.maxMeshSize = 0.24; % 6 cm for the grob meshing
-coil.nbrNodeToBorder = 6; %With Blender, their is sometime some with 5 connection. This can be corrected in the mesh
-coil.distanceBetween2Wire = 0.1;
 coil.rateIncreasingWire = 1;
 
 %% Target point definition
-targetVolumeType = 'sphereSH';%'cylinder_xy'; %'sphere';%
-targetVolumeRayon = 0.05;
-% We first define the range and step
-
+addpath('..\SphericalHarmonics\')
 
 degreeMax = 10;
 orderMax = 10;
 rhoReference = 0.08;
 rk = createTargetPointGaussLegendreAndRectangle7(rhoReference,degreeMax,orderMax);
-calculateR = 1;
-calculateL = 1;
-calculateLwp = 0;
-calculateA = 0;
+
+%% Then we habe to calculate the field in a given direction
+
+% Initialize the target ampltiude
+bc(1).coefficient = zeros(degreeMax+1,orderMax+1);
+bs(1).coefficient = zeros(degreeMax+1,orderMax+1);
+bc(2).coefficient = zeros(degreeMax+1,orderMax+1);
+bs(2).coefficient = zeros(degreeMax+1,orderMax+1);
+bc(3).coefficient = zeros(degreeMax+1,orderMax+1);
+bs(3).coefficient = zeros(degreeMax+1,orderMax+1);
+
+% define the target ampltiude
+targetCoil = 'DriveY';
+bc(2).coefficient(1,1) = 15*10^-3; % Drive Y
+B  = RebuildField7bis(bc,bs,rhoReference, rk, 'sch');
+coil.btarget = [B(1,:) B(2,:) B(3,:)];
+clear('B');
+
 
 %% In order to calculate the resistance matrix, we have to providfe some data :
 
@@ -73,21 +76,15 @@ shield.wireThickness = 4*shield.skinDepth; % (meter) Thickness of the shield. Sh
 shield.wireResistivity = shield.rhoCopper;  % (Ohm*m) resistivity of the wire
 
 
-for i=1:7
-    bc(1).coefficient(i,:) = zeros(1,7);
-    bs(1).coefficient(i,:) = zeros(1,7);
-    bc(2).coefficient(i,:) = zeros(1,7);
-    bs(2).coefficient(i,:) = zeros(1,7);
-    bc(3).coefficient(i,:) = zeros(1,7);
-    bs(3).coefficient(i,:) = zeros(1,7);
-end
-bc(2).coefficient(1,1) = 15*10^-3; % Drive Y
-B  = RebuildField7bis(bc,bs,rhoReference, rk, 'sch');
-
-targetCoil = 'DriveY';
-coil.btarget = [B(1,:) B(2,:) B(3,:)];
-
-
+%% Part to calculate
 optimizationType = 'QP';
 coil.error = 0.25;
-clear('B');
+calculateR = 1;
+calculateL = 1;
+calculateLwp = 0;
+calculateA = 0;
+
+
+
+
+
