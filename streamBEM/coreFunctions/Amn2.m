@@ -10,7 +10,7 @@ function [AX,AY,AZ] = Amn2(node_1, triangle_1, basis_1,node_2, triangle_2, basis
 
 
 
-[~,~,ck] = TriGaussPoints(2);
+[~,~,ck] = triGaussPoints(2);
 
 %%
 mu_0 = 4*pi*10^-7;
