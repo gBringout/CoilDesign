@@ -1,4 +1,8 @@
 *.asv
+*.mat
+*.obj
+*.mtl
+*.mlx
 streamBEM/coreFunctions/Cn.m
 streamBEM/coreFunctions/Cn2.m
 streamBEM/coreFunctions/Cn2_study.m
