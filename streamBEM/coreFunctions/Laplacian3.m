@@ -1,4 +1,4 @@
-function [Lwp] = Laplacian3(node, triangle)   
+function [Lwp] = Laplacian3(node, triangle,h)   
 % This file aim at calculating the Laplacian of a mesh
 %
 %
@@ -6,28 +6,34 @@ function [Lwp] = Laplacian3(node, triangle)
 % triangle : a matrix linking 3 node together to form a triangle
 
 %ChangeLog
-% v3: clean the code
+% v3: clean the code - add the optional h parameter
 
 % h is the average length between to point of the mesh
-nbrSegment = 0;
-for t=1:size(triangle,2)
-    nbrSegment = nbrSegment + 1;
-    a = node(triangle(t).node(1)).coord; %first point of the triangle
-    nbrSegment = nbrSegment + 1;
-    b = node(triangle(t).node(2)).coord; %second point of the triangle
-    nbrSegment = nbrSegment + 1;
-    c = node(triangle(t).node(3)).coord; %third point of the triangle
-    lengthSide(nbrSegment-2) = norm(a-b);
-    lengthSide(nbrSegment-1) = norm(b-c);
-    lengthSide(nbrSegment) = norm(c-a);
+if nargin<3
+    nbrSegment = 0;
+    for t=1:size(triangle,2)
+        nbrSegment = nbrSegment + 1;
+        a = node(triangle(t).node(1)).coord; %first point of the triangle
+        nbrSegment = nbrSegment + 1;
+        b = node(triangle(t).node(2)).coord; %second point of the triangle
+        nbrSegment = nbrSegment + 1;
+        c = node(triangle(t).node(3)).coord; %third point of the triangle
+        lengthSide(nbrSegment-2) = norm(a-b);
+        lengthSide(nbrSegment-1) = norm(b-c);
+        lengthSide(nbrSegment) = norm(c-a);
+    end
+    %plot(lengthSide)
+    %h = mean(lengthSide)/3/560 % 1000 and 3000 are good! 400 not so bad
+    h = mean(lengthSide)/3;
+    %h = 0.0088; % h= 0.0088;
 end
-%plot(lengthSide)
-%h = mean(lengthSide)/3/560 % 1000 and 3000 are good! 400 not so bad
-h = mean(lengthSide)/3;
-%h = 0.0088; % h= 0.0088;
 constante = 1/(4*pi*h^2);
 
-if matlabpool('size') == 0 % checking to see if my pool is already open
+[TF,~] = license('checkout', 'Distrib_Computing_Toolbox');
+schd = findResource('scheduler', 'configuration', 'local');
+numWorkers = schd.ClusterSize;
+if matlabpool('size') == 0  && TF && numWorkers >1
+    % checking to see if the pool is already open and of we have the licence
     matlabpool open
 end
 
