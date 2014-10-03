@@ -31,7 +31,7 @@ close all;
 % tri = TriRep(triangle,node(:,1),node(:,2),node(:,3));
 % and then display it : trimesh(tri);
 %
-[shield.listNode,shield.listTriangle,shield.tri] = importMeshWavefront('./data/20x20_R180_H400.obj');
+[shield.listNode,shield.listTriangle,shield.tri] = importMeshWavefront('./data/20x20_R150_H400.obj');
 
 shield.center = [0 0 0];
 shield.reduction = 1;
@@ -54,8 +54,6 @@ targetVolumeType = 'sphereSH';%'cylinder_xy'; %'sphere';%
 targetVolumeRayon = 0.05;
 % We first define the range and step
 
-addpath('..\SphericalHarmonics\')
-
 degreeMax = 10;
 orderMax = 10;
 rhoReference = 0.08;
@@ -72,7 +70,7 @@ calculateA = 0;
 % node on top, in order to facilitate the reduction of all the system
 % matrix
 % all the
-reduction = 0; %original 1
+%reduction = 1; %original 1
 %% In order to calculate the resistance matrix, we have to providfe some data :
 
 % For the coil
@@ -94,7 +92,7 @@ shield.wireThickness = 0.002; % (meter) Thickness of the shield. Should be 4*ski
 %shield.fillFactor = 1;
 shield.rhoCopper = 1.68*10^-8; % (Ohm*m) resistivity of the copper
 shield.muCopper = 1.2566*10^-6; % (?) absolute magnetic permeability of the material
-shield.skinDepth = sqrt(2*shield.rhoCopper/(shield.muCopper*2*pi*freq));
+shield.skinDepth = sqrt(2*shield.rhoCopper/(shield.muCopper*2*pi*coil.freq));
 shield.wireThickness = 4*shield.skinDepth; % (meter) Thickness of the shield. Should be 4*skin depth
 %shield.rho = shield.rhoCopper*shield.fillFactor;
 shield.wireResistivity = shield.rhoCopper;  % (Ohm*m) resistivity of the wire
