@@ -14,11 +14,12 @@ function [u,v,ck] = triGaussPoints(n)
 % u = zeros(n^2,1);
 % v = zeros(n^2,1);
 % ck = zeros(n^2,1);
+%n=4;
 [eta,w] = gauss(n);
 
 k=1;
-for i=1:n
-    for j=1:n
+for i=1:size(eta,1)
+    for j=1:size(eta,1)
         u(k,1) = (1+eta(i))/2;
         v(k,1) = (1-eta(i))*(1+eta(j))/4;
         ck(k,1) = ((1-eta(i))/8)*w(i)*w(j);
