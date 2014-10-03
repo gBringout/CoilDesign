@@ -15,11 +15,13 @@ if strcmp(optimizationType,'standardTikhonov') || strcmp(optimizationType,'gener
     % Please download the regularization tools of: http://www.imm.dtu.dk/~pcha/Regutools/
     % and add the folder to matlab' path:
     addpath('C:\Users\bringout.IMT\Desktop\Dropbox\Ph.D\Software\regu');
+    %addpath('D:\Dropbox\Ph.D\Software\regu')
 elseif strcmp(optimizationType,'QP')
     % Please download the OPTI TOOLBOX from
     % http://www.i2c2.aut.ac.nz/Wiki/OPTI/, install it
     % and add the folder to matlab' path :
     addpath('C:\Users\bringout.IMT\Desktop\Dropbox\Ph.D\Software\OptiToolbox')
+    %addpath(genpath('D:\Dropbox\Ph.D\Software\OptiToolbox'))
 end
 
 tStart=tic;
@@ -237,9 +239,12 @@ if calculateL && calculateR
     Mii = shield.L;
     Rii = shield.R;
 
-    [Q,Lambda] = eig(Mii\Rii); % use the eigenvalue decomposition % Why do we get sometime negative values? This is bad!
-    Lambda = abs(Lambda);
-    
+    [Q,Lambda] = eig(Mii\Rii); % use the eigenvalue decomposition 
+    % Why do we get sometime negative values? This is bad! This is because
+    % some matrix are not positive semidefinite
+    % we have to use the reduce version of the matrix to avoid that
+    %Lambda = abs(Lambda);
+
     % Calculation of ai
     nbrLambda = size(Lambda,2);
     a = zeros(nbrLambda,nbrLambda);
@@ -249,7 +254,7 @@ if calculateL && calculateR
     aAmplitude = zeros(nbrLambda,nbrLambda);
 
     t=100000/(coil.freq)+(1/4)/coil.freq; %Sin part after 100 000 oscillation
-    for j=1:size(Lambda,2)
+    for j=1:nbrLambda
         a(j,j) = (-2*pi*coil.freq)*(Lambda(j,j)*exp(-Lambda(j,j)*t)...
                 -Lambda(j,j)*cos(2*pi*coil.freq*t)...
                 -2*pi*coil.freq*sin(2*pi*coil.freq*t))/((2*pi*coil.freq)^2+Lambda(j,j)^2);
@@ -276,6 +281,7 @@ if strcmp(optimizationType,'standardTikhonov')
     [coil.x_lambda,~,~] = tikhonov(U,s,V,coil.btarget',reg);
     if coil.reduction
         %coil.s = retrieveCurrentVector2(coil.x_lambda,coil.subBoundaries);
+        coil.s_reduced = coil.x_lambda;
         coil.s = retrieveCurrentVector3(coil.x_lambda,coil.subBoundaries,optimizationType);
     else
         coil.s = coil.x_lambda;
@@ -448,7 +454,7 @@ shield.phase = atan2(shield.bcCos(2).coefficient(1,1),shield.bcSin(2).coefficien
 shield.amplitudebis = sqrt(shield.bcSin(2).coefficient(1,1)^2+shield.bcCos(2).coefficient(1,1)^2);
 
 shield.B = shield.Cfull*shield.s_induce;
-%Whe have to split the field
+%We have to split the field
 nbrPoint = size(rk,1);
 Bx = shield.B(1:nbrPoint);
 By = shield.B(nbrPoint+1:2*nbrPoint);
@@ -458,4 +464,4 @@ shield.amplitude = shield.bc(2).coefficient(1,1);
 fprintf('Shield.\n Generated field: %2.4g / %2.4g T.\n Phase: %0.4g radian.\n Power Loss: %0.4g W\n',shield.amplitude,shield.amplitudebis,shield.phase,shield.p_dis)
 %displaySHC(shield.bc,shield.bs,2)
 
-fprintf('Factor DC/AC: %i\n',(coil.amplitude+shield.amplitudebis)/coil.amplitude)
+fprintf('Factor DC/AC: %i\n',(coil.amplitude-shield.amplitudebis)/coil.amplitude)
