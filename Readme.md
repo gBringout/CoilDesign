@@ -4,6 +4,11 @@ The available technique is:
 * [BEM using stream function.](#bem-stream-function-technique)
 
 ## BEM stream function technique ##
+<div align="center">
+        <img width="45%" src="/streamBEM/examples/DriveCurrentAndWire.jpg" alt="stream function & wire" title="Stream function & wire"</img>
+        <img height="0" width="8px">
+        <img width="35%" src="/streamBEM/examples/Proto.png" alt="Protype" title="Protype"></img>
+</div>
 Here, BEM formulation is used along with stream function to formulate the coil design as an optimization. 3 Basic examples are presented to make coils for [Magnetic Particle Imaging](http://en.wikipedia.org/wiki/Magnetic_particle_imaging) scanner according to [this publication](http://gael-bringout.com/public/Bringout%202014%20-%20Coil%20Design%20for%20Magnetic%20Particle%20Imaging%20Application%20for%20a%20Preclinical%20Scanner.pdf). The examples are:
 + A circular quadrupole,
 + A circular drive coil,
