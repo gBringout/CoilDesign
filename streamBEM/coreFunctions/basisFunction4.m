@@ -61,7 +61,7 @@ for m=1:size(node,2); %For every node
         %we calculate the cross product of 2 vector of the
         %triangle, i.e. the normal of the triangle. This is a
         %vector
-        scaling = 10^8;
+        scaling = 1;%10^8;
         vectorNormal = cross(scaling*(Ami-Cmi),scaling*(Bmi-Cmi));
         % we want to compare this vector to the one going from the
         % center of the volume to on point of the surface.
@@ -101,7 +101,9 @@ for m=1:size(node,2); %For every node
         basis(m).triangle(i).C = Cmi;
         basis(m).triangle(i).value = vmi;
         basis(m).triangle(i).vectorNormal = vectorNormal;
-%         
+        basis(m).triangle(i).air = air;
+% TODO
+% should this go in the triangle calculation???
         % calculate the rmi for the inductance
         % which is a referential change
         % It give us the position (x,y,z) of the integration point (u,v).
