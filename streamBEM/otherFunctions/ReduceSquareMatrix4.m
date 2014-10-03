@@ -7,7 +7,7 @@ function [MR] = ReduceSquareMatrix4(M,subBoundaries1)
 nbrBorderNode = size(subBoundaries1,1);
 
 if nbrBorderNode == 1
-    nonReducedSize = size(M,1);
+    nonReducedSize = size(M);
     nbrNodeOnBoundary = size(subBoundaries1(1).node,1);
     M0 = M(nbrNodeOnBoundary+1:nonReducedSize(1),nbrNodeOnBoundary+1:nonReducedSize(2));
     M1 = M(1,nbrNodeOnBoundary+1:nonReducedSize(2));
