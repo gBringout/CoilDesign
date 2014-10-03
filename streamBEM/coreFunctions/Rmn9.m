@@ -21,11 +21,19 @@ tic;
 R = zeros(size(node,2),size(node,2));
 
 conductorSurfaceResistance = rho/t;
-if matlabpool('size') == 0 % checking to see if my pool is already open
-   matlabpool open 4
+
+[TF,~] = license('checkout', 'Distrib_Computing_Toolbox');
+numWorkers = 0;
+if TF
+    schd = findResource('scheduler', 'configuration', 'local');
+    numWorkers = schd.ClusterSize;
+end
+if matlabpool('size') == 0  && TF && numWorkers >1
+    % checking to see if the pool is already open and of we have the licence
+    matlabpool open
 end
 
-fprintf('Loop n=%5.0i',0);
+%fprintf('Loop n=%5.0i',0);
 %for m=1:size(node,1);
 parfor m=1:size(node,2); % m is a node
     temp = zeros(1,size(node,2));

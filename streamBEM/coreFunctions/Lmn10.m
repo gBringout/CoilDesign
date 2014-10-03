@@ -28,8 +28,16 @@ coef = mu_0/(4*pi);
 nbrIntegrationPoints = size(ck,1);
 
 L = zeros(size(node_1,2),size(node_2,2)); % 1 = m, 2 = n
-if matlabpool('size') == 0 % checking to see if my pool is already open
-    matlabpool open 4
+
+[TF,~] = license('checkout', 'Distrib_Computing_Toolbox');
+numWorkers = 0;
+if TF
+    schd = findResource('scheduler', 'configuration', 'local');
+    numWorkers = schd.ClusterSize;
+end
+if matlabpool('size') == 0  && TF && numWorkers >1
+    % checking to see if the pool is already open and of we have the licence
+    matlabpool open
 end
 
 tic
