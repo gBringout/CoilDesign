@@ -15,7 +15,7 @@ Here, BEM formulation is used along with stream function to formulate the coil d
 + A circular drive coil,
 + A planar drive coil.
 
-### Instalation ###
+### Installation ###
 To work, this script required 3 externals scripts:
 * [SphericalHamornics](https://github.com/gBringout/SphericalHarmonics)
 * [regu](http://www.imm.dtu.dk/~pcha/Regutools/) package from C Hansen for the Tikhonov implementation
@@ -26,6 +26,6 @@ The definition of the wanted coils is done in a separate files. One files per co
 
 # Contributing #
 You are welcome to contribute to this repository. Please read the associated license.
-To thank you for your (comming) help, please have this pig coil:
+To thank you for your (coming) help, please have this pig coil:
 ![Alt text](/streamBEM/examples/smallPigCoilStream.gif?raw=true "Stream function on a pig")
 ![Alt text](/streamBEM/examples/smallPigCoilWire.gif?raw=true "Stream function on a pig")
