@@ -27,5 +27,6 @@ The definition of the wanted coils is done in a separate files. One files per co
 # Contributing #
 You are welcome to contribute to this repository. Please read the associated license.
 To thank you for your (coming) help, please have this pig coil:
+
 ![Alt text](/streamBEM/examples/smallPigCoilStream.gif?raw=true "Stream function on a pig")
 ![Alt text](/streamBEM/examples/smallPigCoilWire.gif?raw=true "Stream function on a pig")
