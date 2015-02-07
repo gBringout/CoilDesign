@@ -1,27 +1,24 @@
 % BEM methods - with shield
 clear all;
 close all;
-addpath('.\examples');
-addpath('.\data');
-addpath('.\coreFunctions');
-addpath('.\displayFunctions');
-addpath('.\otherFunctions');
-addpath(genpath('..\..\SphericalHarmonics\'));
+addpath(genpath(fullfile('.')))
+addpath(genpath(fullfile('..','..','SphericalHarmonics')))
 
 
 DY_shielding_TransMagConf % the script used to make the transmag calcalation
+%Q0_shielding %the script to calculate the shielding of the Quadrupole by  the solenoid
 
 if strcmp(optimizationType,'standardTikhonov') || strcmp(optimizationType,'generalizedTikhonov')
     % Please download the regularization tools of: http://www.imm.dtu.dk/~pcha/Regutools/
     % and add the folder to matlab' path:
-    addpath('C:\Users\bringout.IMT\Desktop\Dropbox\Ph.D\Software\regu');
-    %addpath('D:\Dropbox\Ph.D\Software\regu')
+    addpath(genpath(fullfile('..','..','regu')))
+    %addpath(genpath(fullfile('..','..','..','Software','regu')))
 elseif strcmp(optimizationType,'QP')
     % Please download the OPTI TOOLBOX from
     % http://www.i2c2.aut.ac.nz/Wiki/OPTI/, install it
     % and add the folder to matlab' path :
-    addpath('C:\Users\bringout.IMT\Desktop\Dropbox\Ph.D\Software\OptiToolbox')
-    %addpath(genpath('D:\Dropbox\Ph.D\Software\OptiToolbox'))
+    addpath(genpath(fullfile('..','..','OptiToolbox')))
+    %addpath(genpath(fullfile('..','..','..','Software','OptiToolbox')))
 end
 
 tStart=tic;
@@ -305,7 +302,7 @@ elseif strcmp(optimizationType,'QP')
     disp('Quadratic Programming')
     % Optimisation parameter
 
-    H = coil.R;
+    H = coil.L;
     f = zeros(size(H,1),1);                
 
     % Linear Constraints
@@ -423,7 +420,7 @@ coil.B = coil.Cfull*coil.s;
 coil.p_dis = coil.s'*coil.Rfull*coil.s;
 coil.e_stored = 0.5*coil.s'*coil.Lfull*coil.s;
 
-%% Field loss calculation
+%% Field loss calculation - Drive
 
 coil.B = coil.Cfull*coil.s;
 %Whe have to split the field
@@ -465,3 +462,47 @@ fprintf('Shield.\n Generated field: %2.4g / %2.4g T.\n Phase: %0.4g radian.\n Po
 %displaySHC(shield.bc,shield.bs,2)
 
 fprintf('Factor DC/AC: %i\n',(coil.amplitude-shield.amplitudebis)/coil.amplitude)
+
+%% Field loss calculation - Gradient
+
+coil.B = coil.Cfull*coil.s;
+%Whe have to split the field
+nbrPoint = size(rk,1);
+Bx = coil.B(1:nbrPoint);
+By = coil.B(nbrPoint+1:2*nbrPoint);
+Bz = coil.B(2*nbrPoint+1:end);
+[coil.bc,coil.bs] = getSphericalHarmonicsCoefficientMeasure7(Bx,By,Bz,degreeMax,orderMax,rk,'sch');
+coil.amplitude = coil.bc(1).coefficient(2,2)/rhoReference;
+coil.phase = 0;
+fprintf('Coil.\n Generated field: %2.4g T/m.\n Phase: %0.4g radian.\n Power Loss: %0.4g W\n',coil.amplitude,coil.phase,coil.p_dis)
+
+shield.Bcos = shield.Cfull*shield.s_induceCos;
+shield.Bsin = shield.Cfull*shield.s_induceSin;
+
+nbrPoint = size(rk,1);
+Bx = shield.Bcos(1:nbrPoint);
+By = shield.Bcos(nbrPoint+1:2*nbrPoint);
+Bz = shield.Bcos(2*nbrPoint+1:end);
+[shield.bcCos,shield.bsCos] = getSphericalHarmonicsCoefficientMeasure7(Bx,By,Bz,degreeMax,orderMax,rk,'sch');
+
+Bx = shield.Bsin(1:nbrPoint);
+By = shield.Bsin(nbrPoint+1:2*nbrPoint);
+Bz = shield.Bsin(2*nbrPoint+1:end);
+[shield.bcSin,shield.bsSin] = getSphericalHarmonicsCoefficientMeasure7(Bx,By,Bz,degreeMax,orderMax,rk,'sch');
+
+shield.phase = atan2(shield.bcCos(2).coefficient(1,1),shield.bcSin(2).coefficient(1,1)); % form A*sin(wt+phi)
+shield.amplitudebis = sqrt(shield.bcSin(2).coefficient(1,1)^2+shield.bcCos(2).coefficient(1,1)^2);
+
+shield.B = shield.Cfull*shield.s_induce;
+%We have to split the field
+nbrPoint = size(rk,1);
+Bx = shield.B(1:nbrPoint);
+By = shield.B(nbrPoint+1:2*nbrPoint);
+Bz = shield.B(2*nbrPoint+1:end);
+[shield.bc,shield.bs] = getSphericalHarmonicsCoefficientMeasure7(Bx,By,Bz,degreeMax,orderMax,rk,'sch');
+shield.amplitude = shield.bc(1).coefficient(2,2)/rhoReference;
+fprintf('Shield.\n Generated field: %2.4g / %2.4g T/m.\n Phase: %0.4g radian.\n Power Loss: %0.4g W\n',shield.amplitude,shield.amplitudebis,shield.phase,shield.p_dis)
+%displaySHC(shield.bc,shield.bs,2)
+
+fprintf('Factor DC/AC: %i\n',(coil.amplitude-shield.amplitudebis)/coil.amplitude)
+

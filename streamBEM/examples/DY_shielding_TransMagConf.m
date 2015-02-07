@@ -31,7 +31,7 @@ close all;
 % tri = TriRep(triangle,node(:,1),node(:,2),node(:,3));
 % and then display it : trimesh(tri);
 %
-[shield.listNode,shield.listTriangle,shield.tri] = importMeshWavefront('./data/20x20_R150_H400.obj');
+[shield.listNode,shield.listTriangle,shield.tri] = importMeshWavefront(fullfile('.','data','20x20_R150_H400.obj'));
 
 shield.center = [0 0 0];
 shield.reduction = 1;
@@ -40,7 +40,7 @@ shield.nbrNodeToBorder = 6; %With Blender, their is sometime some with 5 connect
 shield.distanceBetween2Wire = 0.1;
 shield.rateIncreasingWire = 1;
 
-[coil.listNode,coil.listTriangle,coil.tri] = importMeshWavefront('./data/20x20_R119_H280.obj');
+[coil.listNode,coil.listTriangle,coil.tri] = importMeshWavefront(fullfile('.','data','20x20_R119_H280.obj'));
 
 coil.center = [0 0 0];
 coil.reduction = 1;
