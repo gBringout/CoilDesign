@@ -1,12 +1,8 @@
 % BEM methods using stream functions
 clear all;
 close all;
-addpath('.\examples');
-addpath('.\data');
-addpath('.\coreFunctions');
-addpath('.\displayFunctions');
-addpath('.\otherFunctions');
-addpath(genpath('..\..\SphericalHarmonics\'));
+addpath(genpath(fullfile('.')))
+addpath(genpath(fullfile('..','..','SphericalHarmonics')))
 
 TransMag_Quadrupole
 %TransMag_Drive
