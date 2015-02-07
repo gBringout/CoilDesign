@@ -12,12 +12,14 @@ TransMag_Quadrupole
 if strcmp(optimizationType,'standardTikhonov') || strcmp(optimizationType,'generalizedTikhonov')
     % Please download the regularization tools of: http://www.imm.dtu.dk/~pcha/Regutools/
     % and add the folder to matlab' path:
-    addpath('C:\Users\bringout.IMT\Desktop\Dropbox\Ph.D\Software\regu');
+    addpath(genpath(fullfile('..','..','regu')))
+    %addpath(genpath(fullfile('..','..','..','Software','regu')))
 elseif strcmp(optimizationType,'QP')
     % Please download the OPTI TOOLBOX from
     % http://www.i2c2.aut.ac.nz/Wiki/OPTI/, install it
     % and add the folder to matlab' path :
-    addpath('C:\Users\bringout.IMT\Desktop\Dropbox\Ph.D\Software\OptiToolbox')
+    addpath(genpath(fullfile('..','..','OptiToolbox')))
+    %addpath(genpath(fullfile('..','..','..','Software','OptiToolbox')))
 end
 
 tStart=tic;
