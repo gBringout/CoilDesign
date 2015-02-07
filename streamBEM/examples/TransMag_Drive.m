@@ -19,7 +19,6 @@ coil.reduction = 1;
 coil.rateIncreasingWire = 1;
 
 %% Target point definition
-addpath(genpath('..\..\SphericalHarmonics\'));
 
 degreeMax = 5;
 orderMax = 5;
