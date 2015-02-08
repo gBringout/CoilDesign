@@ -1,7 +1,7 @@
 % BEM methods - with shield
 clear all;
 close all;
-addpath(genpath(fullfile('.')))
+addpath(genpath(fullfile('..')))
 addpath(genpath(fullfile('..','..','SphericalHarmonics')))
 
 
