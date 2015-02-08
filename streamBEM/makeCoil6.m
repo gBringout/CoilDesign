@@ -1,7 +1,7 @@
 % BEM methods using stream functions
 clear all;
 close all;
-addpath(genpath(fullfile('.')))
+addpath(genpath(fullfile('..')))
 addpath(genpath(fullfile('..','..','SphericalHarmonics')))
 
 TransMag_Quadrupole
