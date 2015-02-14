@@ -15,11 +15,11 @@ if strcmp(optimizationType,'standardTikhonov') || strcmp(optimizationType,'gener
     addpath(genpath(fullfile('..','..','regu')))
     %addpath(genpath(fullfile('..','..','..','Software','regu')))
 elseif strcmp(optimizationType,'QP')
-    % Please download the OPTI TOOLBOX from
-    % http://www.i2c2.aut.ac.nz/Wiki/OPTI/, install it
+    % Please download the YALMIP TOOLBOX from
+    % http://users.isy.liu.se/johanl/yalmip/
     % and add the folder to matlab' path :
-    addpath(genpath(fullfile('..','..','OptiToolbox')))
-    %addpath(genpath(fullfile('..','..','..','Software','OptiToolbox')))
+    addpath(genpath(fullfile('..','..','YALMIP')))
+    %addpath(genpath(fullfile('..','..','..','Software','YALMIP')))
 end
 
 tStart=tic;
@@ -180,35 +180,31 @@ elseif strcmp(optimizationType,'generalizedTikhonov')
 elseif strcmp(optimizationType,'QP')
     disp('Quadratic Programming')
     % Optimisation parameter
-
-    H = coil.L;
-    f = zeros(size(H,1),1);                
-
-    % Linear Constraints
-    % or Linear Inequality Constraints (Ax <= b)
-    A = coil.Ctarget;
-    btarget = [coil.btarget];
-
-    rl = zeros(1,size(btarget,2));
-    ru = zeros(1,size(btarget,2));
-    for j=1:size(A,1)
-        if btarget(j)<0
-            % rl and ru stands for "lower" and "upper"
-            rl(j) = (1+coil.error)*btarget(j);
-            ru(j) = (1-coil.error)*btarget(j);
-        elseif btarget(j)>0
-            rl(j) = (1-coil.error)*btarget(j);
-            ru(j) = (1+coil.error)*btarget(j);
+    % YALMIP
+    % Here we try to minimize the inductance
+    x = sdpvar(size(coil.L,2),1); % define the size of the objective
+    Objective = x'*coil.R*x; % set the objective
+    
+    % build the error constrains on the fields
+    lr = zeros(1,size(coil.btarget,2));
+    ur = zeros(1,size(coil.btarget,2));
+    for j=1:size(coil.Ctarget,1)
+        if coil.btarget(j)<0
+            % lr and ur stands for "lower" and "upper"
+            lr(j) = (1+coil.error)*coil.btarget(j);
+            ur(j) = (1-coil.error)*coil.btarget(j);
+        elseif coil.btarget(j)>0
+            lr(j) = (1-coil.error)*coil.btarget(j);
+            ur(j) = (1+coil.error)*coil.btarget(j);
         else
-            rl(j) = -0.001;
-            ru(j) = 0.001;
+            lr(j) = -0.001;
+            ur(j) = 0.001;
         end
     end
-    % we do not constrain the amplitude of the solution
-    lb = ones(size(H,1),1)*-Inf;
-    ub = ones(size(H,1),1)*Inf;
-
-    % but we do it on the boundaries
+    
+    % boundary of the solution
+    lb = ones(size(coil.L,1),1)*-Inf;
+    ub = ones(size(coil.L,1),1)*Inf;
     if coil.reduction
         for i=1:size(coil.subBoundaries,1)
             lb(i) = 0; %boundary of the mesh have to be null
@@ -224,35 +220,21 @@ elseif strcmp(optimizationType,'QP')
             end
         end
     end
-
-    % Quadratic Constraint
-    % or Quadratic Inequality (x'Qx + l'x <= r)
-    %Q = {[R] [L]};             
-    %l = [zeros(size(R,1),1),zeros(size(L,1),1)];
-    %r = [90*10^-3;10e8];
-    Q2 = coil.R;
-    l = zeros(size(coil.R,1),1);
-    r = 10000;
-
-
-    % change the option.
-    %   Solver 'ipopt' is for the linearisation (i.e. Poole method)
-    %   Solver 'BONMIN' is not working
-    %   Solver 'SCIP' is not wirking
-    %   Solver 'Cplex' preview version is too small
-    opts = optiset('display','iter',...
-            'solver','ipopt',...
-            'maxiter',500,...
-            'maxtime',100);
-
-    % QPQC
-    Opt = opti('qp',H,f,'lin',A,rl,ru,'qc',Q2,l,r,'bounds',lb,ub,'options',opts); %bounded lineare constrains
-    % QPLC
-    %Opt = opti('qp',H,f,'lin',A,rl,ru,'bounds',lb,ub,'options',opts);
-    %Opt = opti('qp',H,f,'ineq',A,b,'bounds',lb,ub,'qc',Q2,l,r,'options',opts);
-
-    % Solve the QP problem
-    [coil.s_reduced,fval,exitflag,info] = solve(Opt);
+    
+    %Build the constrains object
+    Constraints = [lr' <= coil.Ctarget*x <= ur',...
+                   lb<=x<=ub];
+               
+    
+    % Set some options for YALMIP and solver
+    options = sdpsettings('verbose',2);
+    options = sdpsettings(options,'debug',1);
+    %solve the problem
+    solvesdp(Constraints,Objective,options)
+    
+    %retrieve the solution
+    coil.s_reduced = double(x);
+    
     if coil.reduction
         coil.s = retrieveCurrentVector3(coil.s_reduced,coil.subBoundaries,optimizationType);
     else
