@@ -1,128 +1,101 @@
-function [BX_a,BY_a,BZ_a] = Field3(BoucleCourant,I,X_Valeur,Y_Valeur,Z_Valeur)
-
-% This file aim at calculating the B field accroding to biot savard equation 
+function [BX_a,BY_a,BZ_a] = Field3(loops,I,position_x,position_y,position_z)
+% This file aim at calculating the B field accroding to Biot-savart equation 
 % at some given point. This is the same calculation as Field2, just for
 % points (and not a grid)
+% position vectors have to have the same size
 
-%% Calcule des constantes
-X_NombreDeBoucle = size(X_Valeur,2);
-Y_NombreDeBoucle = 1;
-Z_NombreDeBoucle = 1;
-NombreDeBoucle = size(BoucleCourant,2);
+% We have to provide
+% loops : [ ] The description of the loops, as segment with a given
+% direction
+% I : [A] current flowing in the wire
+% position_x : [m] x Index component of the point
 
-%% Pré-allocation
-BX_a = zeros(X_NombreDeBoucle,1);
-BY_a = zeros(X_NombreDeBoucle,1);
-BZ_a = zeros(X_NombreDeBoucle,1);
+% output
+% BX_a : magnetic flux density in the xIndex direction
+%
+% created by Gael Bringout - xx.xx.2010
+
+%% calculate the size of the elements
+nbrPointX = size(position_x,2);
+nbrLoops = size(loops,2);
+
+%% Pre-allocate
+BX_a = zeros(nbrPointX,1);
+BY_a = zeros(nbrPointX,1);
+BZ_a = zeros(nbrPointX,1);
 
 %% Constante
-z=0;
-totaltime = 0;
-prev_lx = 0;
-curr_lx = 0;
-prev_ly = 0;
-curr_ly = 0;
-prev_lz = 0;
-curr_lz = 0;
-prev_coord_1u = 0;
-coord_z = 0;
-coord_theta = 0;
-coord_1u = 0;
-coord_2u = 0;
-pi_180 = pi/180;
 mu0 = 4*pi*10^-7;
 mip4 = (mu0*I)/(4*pi);
-
-
     
-%% Calcule du champs 3D
-%han = waitbar(0,'Calcul en cours !');
+%% Field calculation
 
-%disp('Calculation of the Field');
-if matlabpool('size') == 0 % checking to see if my pool is already open
+disp('Calculation of the Field');
+
+activate the paralle function if license is available
+[TF,~] = license('checkout', 'Distrib_Computing_Toolbox');
+numWorkers = 0;
+if TF
+    schd = findResource('scheduler', 'configuration', 'local');
+    numWorkers = schd.ClusterSize;
+end
+if matlabpool('size') == 0  && TF && numWorkers >1
+    % checking to see if the pool is already open and of we have the licence
     matlabpool open
 end
-for x = 1:X_NombreDeBoucle;
-% message = sprintf('%s%u%s%u%s%u%s%s%u%s %5.2f %s','Boucle X ',x,' sur ',X_NombreDeBoucle,'. Boucle Y (',Y_NombreDeBoucle,'). Boucle Z ','(',Z_NombreDeBoucle,'). Temps :',totaltime/60,'min');
-% disp(message);
-% tic;
-% BoucleFaite = x;
-% BoucleTotale = X_NombreDeBoucle;
-% Avancement = BoucleFaite/BoucleTotale;
-% waitbar(Avancement,han,sprintf('Avancement %2.1f %%. Temps restant : %5.2f min',Avancement*100, (totaltime/60) /Avancement - totaltime/60 ));
-    tempX = zeros(Y_NombreDeBoucle,Z_NombreDeBoucle);
-    tempY = zeros(Y_NombreDeBoucle,Z_NombreDeBoucle);
-    tempZ = zeros(Y_NombreDeBoucle,Z_NombreDeBoucle);
-    for y = 1:Y_NombreDeBoucle
 
-        
-        X_Val = X_Valeur(x);
-        Y_Val = Y_Valeur(x);
-        for z = 1:Z_NombreDeBoucle
-            % Boucle pour passer dans tous le design de la coil
-            Z_Val = Z_Valeur(x);
-            somme_X = 0;
-            somme_Y = 0;
-            somme_Z = 0;
-            
-            for w=1:NombreDeBoucle
-                sens = BoucleCourant(w).currentDirection;
-                coord_z     = BoucleCourant(w).Coord(3,:);
-                %coord_theta = BoucleCourant(w).Coord(2,:);
-                coord_x = BoucleCourant(w).Coord(1,:);
-                coord_y = BoucleCourant(w).Coord(2,:);
-                
-                prev_lz = coord_z(1);
-                prev_lx = coord_x(1);
-                prev_ly = coord_y(1);
-%                 prev_lx = cos(coord_theta(1)*pi_180);
-%                 prev_ly = sin(coord_theta(1)*pi_180);
+for xIndex = 1:nbrPointX;
+    xValue = position_x(xIndex);
+    yValue = position_y(xIndex);
+    zValue = position_z(xIndex);
+    sum_X = 0;
+    sum_Y = 0;
+    sum_Z = 0;
 
-                for u=2:size(BoucleCourant(w).Coord,2)
+    % for each loops
+    for w=1:nbrLoops
+        direction = loops(w).currentDirection;
+        coord_x = loops(w).Coord(1,:);
+        coord_y = loops(w).Coord(2,:);
+        coord_z = loops(w).Coord(3,:);
 
-                    curr_lx = coord_x(u);
-                    curr_ly = coord_y(u);
-                    curr_lz = coord_z(u);
-%                     curr_lx = cos(coord_theta(u)*pi_180);
-%                     curr_ly = sin(coord_theta(u)*pi_180);
-                    
-                    lx = (curr_lx-prev_lx);
-                    ly = (curr_ly-prev_ly);
-                    lz = (curr_lz - prev_lz);
-                    
-                    rx = X_Val - ((curr_lx + prev_lx)/2);
-                    ry = Y_Val - ((curr_ly + prev_ly)/2);
-                    rz = Z_Val - ((curr_lz + prev_lz)/2);
-                    
-                    norm_vect = (sqrt(rx^2+ry^2+rz^2))^3;
-                    coef_vect = sens*mip4 / norm_vect;
-                    
-                    somme_X = somme_X + coef_vect * (ly*rz-lz*ry);
-                    somme_Y = somme_Y + coef_vect * (lz*rx-lx*rz);
-                    somme_Z = somme_Z + coef_vect * (lx*ry-ly*rx);
-                    
-                    prev_lz      = curr_lz;
-                    prev_lx      = curr_lx;
-                    prev_ly      = curr_ly;
-                end
-            end
-            tempX(y,z) = somme_X;
-            tempY(y,z) = somme_Y;
-            tempZ(y,z) = somme_Z;
+        previous_lz = coord_z(1);
+        previous_lx = coord_x(1);
+        previous_ly = coord_y(1);
+        % for each segment for the actual loops
+        for u=2:size(loops(w).Coord,2)
+
+            current_lx = coord_x(u);
+            current_ly = coord_y(u);
+            current_lz = coord_z(u);
+
+            % x,y and z component of the length of the actual wire element
+            lx = (current_lx-previous_lx);
+            ly = (current_ly-previous_ly);
+            lz = (current_lz - previous_lz);
+
+            % x,y and z component of distance between the wire
+            % element middle point and the point at which we want
+            % to calculate the field
+            rx = xValue - ((current_lx + previous_lx)/2);
+            ry = yValue - ((current_ly + previous_ly)/2);
+            rz = zValue - ((current_lz + previous_lz)/2);
+
+            % norm at the power of three of the distance
+            norm_vector = (sqrt(rx^2+ry^2+rz^2))^3;
+            coef_vector = direction*mip4 / norm_vector;
+
+            % Biot-savart cross product and integral
+            sum_X = sum_X + coef_vector * (ly*rz-lz*ry);
+            sum_Y = sum_Y + coef_vector * (lz*rx-lx*rz);
+            sum_Z = sum_Z + coef_vector * (lx*ry-ly*rx);
+
+            previous_lz = current_lz;
+            previous_lx = current_lx;
+            previous_ly = current_ly;
         end
     end
-    BX_a(x,:,:) = tempX;
-    BY_a(x,:,:) = tempY;
-    BZ_a(x,:,:) = tempZ;
-%totaltime = totaltime + toc;
+    BX_a(xIndex) = sum_X;
+    BY_a(xIndex) = sum_Y;
+    BZ_a(xIndex) = sum_Z;
 end
-
-%% Sauvegarde des résultats
-% 
-% NomFichier = 'Test_DriveX_40x60elmts_Fields_.mat';
-% disp(NomFichier);
-% save(NomFichier,'X_Start','X_Stop','X_Step','X_Valeur','X_NombreDeBoucle',...
-%                 'Y_Start','Y_Stop','Y_Step','Y_Valeur','Y_NombreDeBoucle',...
-%                 'Z_Start','Z_Stop','Z_Step','Z_Valeur','Z_NombreDeBoucle',...
-%                 'BoucleCourant','I','a',...
-%                 'BX_a','BY_a','BZ_a');
