@@ -1,14 +1,14 @@
 function [Lwp] = Laplacian3(node, triangle,h)   
 % This file aim at calculating the Laplacian of a mesh
+% It has been implemented only for a flat mesh in the XZ plan
 %
 %
 % node : a matrix with the 3d position of each node (in meter)
 % triangle : a matrix linking 3 node together to form a triangle
+% h a optional parameter linked to the mesh properties. example: 0.0088
 
-%ChangeLog
-% v3: clean the code - add the optional h parameter
 
-% h is the average length between to point of the mesh
+% if h is note provided, it is estimated the average length between to point of the mesh
 if nargin<3
     nbrSegment = 0;
     for t=1:size(triangle,2)
@@ -22,16 +22,16 @@ if nargin<3
         lengthSide(nbrSegment-1) = norm(b-c);
         lengthSide(nbrSegment) = norm(c-a);
     end
-    %plot(lengthSide)
-    %h = mean(lengthSide)/3/560 % 1000 and 3000 are good! 400 not so bad
     h = mean(lengthSide)/3;
-    %h = 0.0088; % h= 0.0088;
 end
 constante = 1/(4*pi*h^2);
 
 [TF,~] = license('checkout', 'Distrib_Computing_Toolbox');
-schd = findResource('scheduler', 'configuration', 'local');
-numWorkers = schd.ClusterSize;
+numWorkers = 0;
+if TF
+    schd = findResource('scheduler', 'configuration', 'local');
+    numWorkers = schd.ClusterSize;
+end
 if matlabpool('size') == 0  && TF && numWorkers >1
     % checking to see if the pool is already open and of we have the licence
     matlabpool open
@@ -70,6 +70,3 @@ parfor w=1:dim1Lwp % for each node
     Lwp(w,:) = constante*temp(:);
 end
 fprintf(' - Done in %5.0f sec.\n',toc);
-
-%imagesc(Lwp);
-%colormap(gray)
