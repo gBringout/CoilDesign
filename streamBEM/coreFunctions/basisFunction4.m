@@ -42,7 +42,7 @@ for m=1:size(node,2); %For every node
         %we calculate the cross product of 2 vector of the
         %triangle, i.e. the normal of the triangle. This is a
         %vector
-        vectorNormal = cross(scaling*(Ami-Cmi),scaling*(Bmi-Cmi));
+        vectorNormal = cross((Ami-Cmi),(Bmi-Cmi));
         % we want to compare this vector to the one going from the
         % center of the volume to on point of the surface.
         % we suppose that the center is at (0,0,0).
