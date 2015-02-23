@@ -32,7 +32,7 @@ mip4 = (mu0*I)/(4*pi);
 
 disp('Calculation of the Field');
 
-activate the paralle function if license is available
+%activate the paralle function if license is available
 [TF,~] = license('checkout', 'Distrib_Computing_Toolbox');
 numWorkers = 0;
 if TF
