@@ -9,11 +9,13 @@ addpath(genpath(fullfile('..','..','SphericalHarmonics')))
 
 %% 2. Load the information specific to each the coil design and 
 % add the relevant path for the optimization package
+disp('2. Load the design details')
 
 %TransMag_Quadrupole
 %TransMag_Drive
-TransMag_PlanarDrive
+%TransMag_PlanarDrive
 %MRI_GY
+IWMPI_Drive
 
 if strcmp(optimizationType,'standardTikhonov') || strcmp(optimizationType,'generalizedTikhonov')
     % Please download the regularization tools of: http://www.imm.dtu.dk/~pcha/Regutools/
@@ -30,22 +32,22 @@ end
 
 tStart=tic;
 
-%% 3. Sort the mesh nodes to have all boundaries on top of the mesh
+%% 3. Sort the mesh nodes to have all boundaries on top of the mesh. Then
+% the mesh is pre-processed to calculate general properties as
+% the air of triangle, the barycenter, which triangle is connected to which node,
+% and the basis function associated to each triangle. The mesh and the target
+% points are displayed to be able to check them
+disp('3.Process the mesh')
 
-disp('Re-order the node to have all the border on the top of the node vector')
+disp('  Re-order the node to have all the border on the top of the node vector')
 if coil.reduction == 1
     [coil.listNode,coil.listTriangle,coil.subBoundaries] = NodeSorting2(coil.listNode,coil.listTriangle);
     fprintf('%i border detected on the coil \n',size(coil.subBoundaries,1))
 else
     coil.subBoundaries = [];
 end
-
-%% 4. Processing on the mesh to calculate general properties as
-% the air of triangle, the barycenter, which triangle is connected to which node,
-% and the basis function associated to each triangle. The mesh and the target
-% points are displayed to be able to check them
-
-disp('Process the triangle')
+ 
+disp('  Process the triangle')
 [coil.triangle,coil.node] = processMesh(coil.listTriangle,coil.listNode);
 
 % Calculate the basis function of the mesh.
@@ -53,7 +55,7 @@ disp('Calculate the basis function')
 coil.basis = basisFunction4(coil.node, coil.triangle,coil.center);
 
 
-disp('Ploting the mesh and the target points');
+disp('  Ploting the mesh and the target points');
 figure('Name','Data verification')
 subplot(3,3,1)
 trimesh(coil.listTriangle,coil.listNode(:,1),coil.listNode(:,2),coil.listNode(:,3),ones(size(coil.listNode,1),1)); 
@@ -62,13 +64,13 @@ subplot(3,3,2)
 plot3(rk(:,1),rk(:,2),rk(:,3),'*');
 axis square
 
-%% 5. The different matrices are calculted, when required. And displayed
-
+%% 4. The different matrices are calculted, when required. And displayed
+disp('4.Calculate the requires matrices')
 % The Laplacian
 
 coil.Lwp = zeros(size(coil.node,2),size(coil.node,2));
 if calculateLwp
-    fprintf(1,'Calculating the Laplacian Operator.\n');
+    fprintf(1,'  Calculating the Laplacian Operator.\n');
     if exist('hLaplace')
         coil.Lwp = Laplacian3(coil.node, coil.triangle,hLaplace);
     else
@@ -87,7 +89,7 @@ colormap(gray)
 
 coil.L = zeros(size(coil.node,2),size(coil.node,2));
 if calculateL
-    disp('Calculating the Lmn matrix.');
+    disp('  Calculating the Lmn matrix.');
     coil.L = Lmn10(coil.node, coil.triangle,coil.basis);
     coil.L2 = Lmn12(coil.node, coil.triangle,coil.basis);
 end
@@ -105,7 +107,7 @@ colormap(gray)
 coil.R = zeros(size(coil.node,2),size(coil.node,2));
 
 if calculateR
-    disp('Calculating the Rmn matrix.');
+    disp('  Calculating the Rmn matrix.');
     coil.R = Rmn9(coil.node,coil.triangle,coil.basis,coil.wireResistivity,coil.wireThickness);
 end
 
@@ -118,7 +120,7 @@ colormap('gray')
 
 % The magnetic flux density matrix
 
-disp('Calculating the Cn matrix.');
+disp('  Calculating the Cn matrix.');
 [coil.Cx,coil.Cy,coil.Cz] = Cn7(coil.node,coil.triangle,coil.basis,rk);
 coil.C = [coil.Cx;coil.Cy;coil.Cz];
 
@@ -128,7 +130,7 @@ title('coil.C')
 caxis([min(min(coil.C)) max(max(coil.C))])
 colormap('gray')
 
-%% 6. The target magnetic flux density matrix is build, accoring to 
+% The target magnetic flux density matrix is build, accoring to 
 % the type of coil which has to be designed
 
 if strcmp(targetCoil,'dBzdx') || strcmp(targetCoil,'dBzdy') || strcmp(targetCoil,'dBzdz')
@@ -139,11 +141,12 @@ elseif strcmp(targetCoil, 'Quad')
     coil.Ctarget = [coil.Cx;coil.Cy;coil.Cz];
 end
 
-%% 7. The matrix are reduced to used the normalized set 
+%% 5. The matrix are reduced to used the normalized set 
 % of basis function (if required). Some are then displayed
+disp('5. Normalising the set of basis function')
 
 if coil.reduction && size(coil.subBoundaries,1)>0
-    disp('Reduction of the matrix')
+    disp('  Reduction of the matrix')
     coil.nonReducedSize = size(coil.R,1);
     coil.Rfull = coil.R;
     coil.R = ReduceSquareMatrix4(coil.Rfull,coil.subBoundaries);
@@ -170,10 +173,11 @@ title('reduced coil.R')
 axis square
 colormap(gray)
 
-%% 8. The optimization problem is solved
+%% 6. The optimization problem is solved
+disp('6.Optimisation')
 
 if strcmp(optimizationType,'standardTikhonov')
-    disp('Standard Tikhonov')
+    disp('  Standard Tikhonov')
     [U,s,V] = csvd(coil.Ctarget);
     spectrum = sort(s(:,1),'descend');
     subplot(3,3,9)
@@ -188,7 +192,7 @@ if strcmp(optimizationType,'standardTikhonov')
     end
 
 elseif strcmp(optimizationType,'generalizedTikhonov')
-    disp('Generalized Tikhonov')
+    disp('  Generalized Tikhonov')
     [U,sm,X,V,W] = cgsvd(coil.Ctarget,coil.Lwp);
     spectrum = sort(sm(:,1),'descend');
     subplot(3,3,9)
@@ -202,7 +206,7 @@ elseif strcmp(optimizationType,'generalizedTikhonov')
     end
     
 elseif strcmp(optimizationType,'QP')
-    disp('Quadratic Programming')
+    disp('  Quadratic Programming')
     % Optimisation parameter
     % YALMIP
     % Here we try to minimize the inductance
@@ -269,56 +273,26 @@ end
 
 displayStreamFunction(coil.listTriangle,coil.s,coil.listNode)
 
-%% 9. The wire centroids are aproximate and the resulting wire are displayed
-
+%% 7. The wire centroids are aproximate and the resulting wire are displayed
+disp('7. Extract the wire path')
 [wire,nbrwire,minimalWireSpacing,res] = NbrWireOptimisation3(coil.listNode,coil.listTriangle,coil.s,coil.wireWidth,coil.startingWireNumber,coil.distanceBetween2Wire,coil.rateIncreasingWire);
 displayWire(wire);
 
 
-%% 10. Different properties are then evaluated
+%% 8. Different properties are then evaluated
+% Calculating the field generated by the wires
+[coil.Bx,coil.By,coil.Bz] = Field3(wire,coil.current,rk(:,1)',rk(:,2)',rk(:,3)');
 
-% Field, dissipated power and stored energy from the stream function
-% solution
-coil.B = coil.Cfull*coil.s;
-coil.p_dis = coil.s'*coil.Rfull*coil.s;
-coil.e_stored = 0.5*coil.s'*coil.Lfull*coil.s;
+% making a decomposition up to degree and order 5
+degreeMax = 5;
+orderMax = 5;
 
-% Calculation of the field from the centroids
-[coil.Bx,coil.By,coil.Bz] = Field2(wire,coil.current,coil.x_Value,coil.y_Value,coil.z_Value);
+% Displaying using the schimdt semi-normalisation
+mode = 'sch';
+[bc, bs] = getSphericalHarmonicsCoefficientMeasure7(coil.Bx,coil.By,coil.Bz,degreeMax,orderMax,rk,mode);
+displaySHC(bc,bs,2,10^6)
 
-DisplayField(coil.Bx,coil.By,coil.Bz,coil.x_Value,coil.y_Value,coil.z_Value,-40*10^-6,40*10^-6);
-if strcmpi(targetCoil,'Quad') || strcmpi(targetCoil,'dBzdy')
-    [gradientLinearity,gradientValueCenter] = Linearity(coil.Bx,coil.By,coil.Bz,coil.sphere_radius,coil.x_Value,coil.y_Value,coil.z_Value);
-    procentPlane = [0.01,0.03,0.05,0.08,0.10,0.15];
-    procentVolume = 0.05;
-    DisplayFieldGradientLinearity(coil.By,wire,coil.coil_radius,coil.coil_length,procentPlane,procentVolume,coil.x_Value,coil.y_Value,coil.z_Value)
-elseif strcmpi(targetCoil,'DriveX')
-    [coil.maxHomoX,coil.maxHomoY,coil.maxHomoZ,coil.meanHomoX,coil.meanHomoY,coil.meanHomoZ,coil.Bx0,coil.By0,coil.Bz0] = Homogeneity(coil.Bx,coil.By,coil.Bz,coil.sphere_radius,coil.x_Value,coil.y_Value,coil.z_Value);
-    minimumFieldAmplitude = 0;
-    maximumFieldAmplitude = 1;
-    DisplayField(sqrt((coil.Bx./coil.By0).^2),sqrt((coil.By./coil.By0).^2),sqrt((coil.Bz./coil.By0).^2),coil.x_Value,coil.y_Value,coil.z_Value,minimumFieldAmplitude,maximumFieldAmplitude)
-    procentPlane = [0.05,0.10,0.20];
-    procentVolume = 0.05;
-    DisplayFieldHomogeneity(coil.Bx,wire,coil.coil_radius,coil.coil_length,procentPlane,procentVolume,coil.x_Value,coil.y_Value,coil.z_Value)
-elseif strcmpi(targetCoil,'DriveY')
-    [coil.maxHomoX,coil.maxHomoY,coil.maxHomoZ,coil.meanHomoX,coil.meanHomoY,coil.meanHomoZ,coil.Bx0,coil.By0,coil.Bz0] = Homogeneity(coil.Bx,coil.By,coil.Bz,coil.sphere_radius,coil.x_Value,coil.y_Value,coil.z_Value);
-    minimumFieldAmplitude = 0;
-    maximumFieldAmplitude = 1;
-    DisplayField(sqrt((coil.Bx./coil.By0).^2),sqrt((coil.By./coil.By0).^2),sqrt((coil.Bz./coil.By0).^2),coil.x_Value,coil.y_Value,coil.z_Value,minimumFieldAmplitude,maximumFieldAmplitude)
-    procentPlane = [0.05,0.10,0.20];
-    procentVolume = 0.05;
-    DisplayFieldHomogeneity(coil.By,wire,coil.coil_radius,coil.coil_length,procentPlane,procentVolume,coil.x_Value,coil.y_Value,coil.z_Value)
-elseif strcmpi(targetCoil,'DriveZ')
-    [coil.maxHomoX,coil.maxHomoY,coil.maxHomoZ,coil.meanHomoX,coil.meanHomoY,coil.meanHomoZ,coil.Bx0,coil.By0,coil.Bz0] = Homogeneity(coil.Bx,coil.By,coil.Bz,coil.sphere_radius,coil.x_Value,coil.y_Value,coil.z_Value);
-    minimumFieldAmplitude = 0;
-    maximumFieldAmplitude = 1;
-    DisplayField(sqrt((coil.Bx./coil.By0).^2),sqrt((coil.By./coil.By0).^2),sqrt((coil.Bz./coil.By0).^2),coil.x_Value,coil.y_Value,coil.z_Value,minimumFieldAmplitude,maximumFieldAmplitude)
-    procentPlane = [0.05,0.10,0.20];
-    procentVolume = 0.05;
-    DisplayFieldHomogeneity(coil.Bz,wire,coil.coil_radius,coil.coil_length,procentPlane,procentVolume,coil.x_Value,coil.y_Value,coil.z_Value)
-else
-    disp('Error : unknown coil type')
-end
-
-% Generate the input file for FastHenry for the calcuation of the inductance
-WriteCoordWireFastHenry(wire,'DesignedCoil',coil.wireWidth,coil.wireThickness,25000,25000,1)
+% Displaying using the mathematical norme
+mode = 'norm';
+[bc, bs] = getSphericalHarmonicsCoefficientMeasure7(coil.Bx,coil.By,coil.Bz,degreeMax,orderMax,rk,mode);
+displaySHC(bc,bs,2,10^5)
