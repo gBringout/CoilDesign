@@ -20,14 +20,14 @@ IWMPI_Drive
 if strcmp(optimizationType,'standardTikhonov') || strcmp(optimizationType,'generalizedTikhonov')
     % Please download the regularization tools of: http://www.imm.dtu.dk/~pcha/Regutools/
     % and add the folder to matlab' path:
-    %addpath(genpath(fullfile('..','..','regu')))
-    addpath(genpath(fullfile('..','..','..','Software','regu')))
+    addpath(genpath(fullfile('..','..','regu')))
+    %addpath(genpath(fullfile('..','..','..','Software','regu')))
 elseif strcmp(optimizationType,'QP')
     % Please download the YALMIP TOOLBOX from
     % http://users.isy.liu.se/johanl/yalmip/
     % and add the folder to matlab' path :
-    %addpath(genpath(fullfile('..','..','YALMIP')))
-    addpath(genpath(fullfile('..','..','..','Software','YALMIP')))
+    addpath(genpath(fullfile('..','..','YALMIP')))
+    %addpath(genpath(fullfile('..','..','..','Software','YALMIP')))
 end
 
 tStart=tic;
