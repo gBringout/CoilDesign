@@ -91,7 +91,6 @@ coil.L = zeros(size(coil.node,2),size(coil.node,2));
 if calculateL
     disp('  Calculating the Lmn matrix.');
     coil.L = Lmn10(coil.node, coil.triangle,coil.basis);
-    coil.L2 = Lmn12(coil.node, coil.triangle,coil.basis);
 end
 
 subplot(3,3,4)
