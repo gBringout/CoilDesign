@@ -18,6 +18,9 @@ coil.center = [0 0 0];
 coil.reduction = 1;
 coil.rateIncreasingWire = 1;
 
+%% Numerical integration
+orderQuadrature = 2;
+
 %% Target point definition
 
 degreeMax = 5;

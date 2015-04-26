@@ -48,11 +48,11 @@ else
 end
  
 disp('  Process the triangle')
-[coil.triangle,coil.node] = processMesh(coil.listTriangle,coil.listNode);
+[coil.triangle,coil.node] = processMesh(coil.listTriangle,coil.listNode,orderQuadrature);
 
 % Calculate the basis function of the mesh.
 disp('Calculate the basis function')
-coil.basis = basisFunction4(coil.node, coil.triangle,coil.center);
+coil.basis = basisFunction4(coil.node, coil.triangle,coil.center,orderQuadrature);
 
 
 disp('  Ploting the mesh and the target points');
@@ -90,7 +90,7 @@ colormap(gray)
 coil.L = zeros(size(coil.node,2),size(coil.node,2));
 if calculateL
     disp('  Calculating the Lmn matrix.');
-    coil.L = Lmn10(coil.node, coil.triangle,coil.basis);
+    coil.L = Lmn10(coil.node, coil.triangle,coil.basis,orderQuadrature);
 end
 
 subplot(3,3,4)
@@ -120,7 +120,7 @@ colormap('gray')
 % The magnetic flux density matrix
 
 disp('  Calculating the Cn matrix.');
-[coil.Cx,coil.Cy,coil.Cz] = Cn7(coil.node,coil.triangle,coil.basis,rk);
+[coil.Cx,coil.Cy,coil.Cz] = Cn7(coil.node,coil.triangle,coil.basis,rk,orderQuadrature);
 coil.C = [coil.Cx;coil.Cy;coil.Cz];
 
 subplot(3,3,6)
