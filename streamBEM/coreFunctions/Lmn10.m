@@ -1,4 +1,4 @@
-function [L] = Lmn10(node_1, triangle_1, basis_1,node_2, triangle_2, basis_2)
+function [L] = Lmn10(node_1, triangle_1, basis_1,node_2, triangle_2, basis_2,orderQuadrature)
 % This file aim at calculating the so called mutual inductance "Lmn" matrix
 % If only 3 set of variable are provided, the mutual and self incductance
 % matrix is calculated for a unique surface
@@ -20,8 +20,13 @@ else
 	typeCalculation = 'differentSurfaces';
 end
 
+if nargin<7
+    orderQuadrature = 2;
+    disp('Please provide the quadrature order in function Lmn10')
+end
+
 % Hard coded Gauss Legendre integration
-[~,~,ck] = triGaussPoints(2);
+[~,~,ck] = triGaussPoints(orderQuadrature);
 cl = ck;
 
 %%
