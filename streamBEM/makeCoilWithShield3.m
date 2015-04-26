@@ -6,7 +6,6 @@ addpath(genpath(fullfile('..','..','SphericalHarmonics')))
 
 
 DY_shielding_TransMagConf % the script used to make the transmag calcalation
-%Q0_shielding %the script to calculate the shielding of the Quadrupole by  the solenoid
 
 if strcmp(optimizationType,'standardTikhonov') || strcmp(optimizationType,'generalizedTikhonov')
     % Please download the regularization tools of: http://www.imm.dtu.dk/~pcha/Regutools/
@@ -39,12 +38,12 @@ else
 end
 
 disp('Process the triangle')
-[coil.triangle,coil.node] = processMesh(coil.listTriangle,coil.listNode);
-[shield.triangle,shield.node] = processMesh(shield.listTriangle,shield.listNode);
+[coil.triangle,coil.node] = processMesh(coil.listTriangle,coil.listNode,orderQuadrature);
+[shield.triangle,shield.node] = processMesh(shield.listTriangle,shield.listNode,orderQuadrature);
 
 disp('Calculate the basis function')
-coil.basis = basisFunction4(coil.node, coil.triangle,coil.center);
-shield.basis = basisFunction4(shield.node, shield.triangle,shield.center);
+coil.basis = basisFunction4(coil.node, coil.triangle,coil.center,orderQuadrature);
+shield.basis = basisFunction4(shield.node, shield.triangle,shield.center,orderQuadrature);
 
 figure('Name','Data verification')
 subplot(3,3,1)
@@ -89,12 +88,12 @@ coupling.L = [[coil.L coupling.LUp];[coupling.LDown shield.L]];
 
 if calculateL
     disp('Calculating the Lmn matrix.');
-    coil.L = Lmn10(coil.node, coil.triangle,coil.basis);
-    shield.L = Lmn10(shield.node, shield.triangle,shield.basis);
+    coil.L = Lmn10(coil.node, coil.triangle,coil.basis,orderQuadrature);
+    shield.L = Lmn10(shield.node, shield.triangle,shield.basis,orderQuadrature);
 
     % Coupling [    coil    0
     %               0       shield]
-    coupling.LUp = Lmn10(coil.node, coil.triangle,coil.basis,shield.node,shield.triangle,shield.basis);
+    coupling.LUp = Lmn10(coil.node, coil.triangle,coil.basis,orderQuadrature,shield.node,shield.triangle,shield.basis);
     coupling.LDown = coupling.LUp';
     coupling.L = [[coil.L coupling.LUp];[coupling.LDown shield.L]];
 end
@@ -114,7 +113,7 @@ shield.Az = zeros(size(shield.node,2),size(coil.node,2));
 
 if calculateA
     disp('Calculating the Ax,Ay and Az matrix.');
-    [shield.Ax,shield.Ay,shield.Az] = Amn2(shield.node, shield.triangle,shield.basis,coil.node, coil.triangle,coil.basis);
+    [shield.Ax,shield.Ay,shield.Az] = Amn2(shield.node, shield.triangle,shield.basis,coil.node, coil.triangle,coil.basis,orderQuadrature);
 end
 
 
@@ -144,8 +143,8 @@ colormap('gray')
 
 %% Attemp to calculate Cn
 disp('Calculating the Cn matrix.');
-[coil.Cx,coil.Cy,coil.Cz] = Cn7(coil.node,coil.triangle,coil.basis,rk);
-[shield.Cx,shield.Cy,shield.Cz] = Cn7(shield.node,shield.triangle,shield.basis,rk);
+[coil.Cx,coil.Cy,coil.Cz] = Cn7(coil.node,coil.triangle,coil.basis,rk,orderQuadrature);
+[shield.Cx,shield.Cy,shield.Cz] = Cn7(shield.node,shield.triangle,shield.basis,rk,orderQuadrature);
 coil.C = [coil.Cx;coil.Cy;coil.Cz];
 shield.C = [shield.Cx;shield.Cy;shield.Cz];
 
