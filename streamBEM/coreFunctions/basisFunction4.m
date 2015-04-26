@@ -1,13 +1,17 @@
-function [basis] = basisFunction4(node, triangle, center)
+function [basis] = basisFunction4(node, triangle, center,orderQuadrature)
 % Calculation of the basis function vector for each triangle
 %
 % node : a matrix with the 3d position of each node (in meter)
 % triangle : a matrix linking 3 node together to form a triangle
 % center : a vector with the coordinate of the center of the mesh
 
+if nargin<4
+    orderQuadrature = 2;
+    disp('Please provide the quadrature order in function basisFunction4')
+end
 
 %% Value useful for the Gauss-Legendre integration
-[u,v,ck] = triGaussPoints(2);
+[u,v,ck] = triGaussPoints(orderQuadrature);
 for i=1:size(u,1)
     w(i) = 1-u(i)-v(i);
 end

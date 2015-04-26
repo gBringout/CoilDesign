@@ -49,6 +49,9 @@ coil.nbrNodeToBorder = 6; %With Blender, their is sometime some with 5 connectio
 coil.distanceBetween2Wire = 0.1;
 coil.rateIncreasingWire = 1;
 
+%% Numerical integration
+orderQuadrature = 2;
+
 %% Target point definition
 targetVolumeType = 'sphereSH';%'cylinder_xy'; %'sphere';%
 targetVolumeRayon = 0.05;

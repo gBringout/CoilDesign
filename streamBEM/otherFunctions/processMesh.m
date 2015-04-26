@@ -1,10 +1,15 @@
-function [triangleNew,nodeNew] = processMesh(triangle,node)
+function [triangleNew,nodeNew] = processMesh(triangle,node,orderQuadrature)
 % Process the mesh to calculate the air of triangle, the barycenter, which
 % triangle is connected to which node, etc.
 
+if nargin<3
+    orderQuadrature = 2;
+    disp('Please provide the quadrature order in function processMesh')
+end
+
 tic
 %% Value useful for the Gauss-Legendre integration
-[u,v,~] = triGaussPoints(2);
+[u,v,~] = triGaussPoints(orderQuadrature);
 w = zeros(size(u,1),1);
 for i=1:size(u,1)
     w(i) = 1-u(i)-v(i);

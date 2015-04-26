@@ -1,4 +1,4 @@
-function [AX,AY,AZ] = Amn2(node_1, triangle_1, basis_1,node_2, triangle_2, basis_2)
+function [AX,AY,AZ] = Amn2(node_1, triangle_1, basis_1,node_2, triangle_2, basis_2,orderQuadrature)
 
 % This file aim at calculating the magnetic vector potential
 %
@@ -9,8 +9,12 @@ function [AX,AY,AZ] = Amn2(node_1, triangle_1, basis_1,node_2, triangle_2, basis
 % changelog : based on Lmn11 and Cn6, for a cleaner version using the basis structure
 
 
+if nargin<7
+    orderQuadrature = 2;
+    disp('Please provide the quadrature order in function Amn2')
+end
 
-[~,~,ck] = triGaussPoints(2);
+[~,~,ck] = triGaussPoints(orderQuadrature);
 
 %%
 mu_0 = 4*pi*10^-7;

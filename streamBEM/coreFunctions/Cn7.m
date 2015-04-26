@@ -1,4 +1,4 @@
-function [Cx,Cy,Cz] = Cn7(node,triangle,basis,r)
+function [Cx,Cy,Cz] = Cn7(node,triangle,basis,r,orderQuadrature)
 
 % This file aim at calculating the so called "Cn matrix"
 %
@@ -12,10 +12,16 @@ function [Cx,Cy,Cz] = Cn7(node,triangle,basis,r)
 % v5: adapted to the new structure of node and triangle
 % v7: clean the code
 
+
+if nargin<5
+    orderQuadrature = 2;
+    disp('Please provide the quadrature order in function Cn7')
+end
+
 tic;
 
 
-[u,v,ck] = triGaussPoints(2);
+[u,v,ck] = triGaussPoints(orderQuadrature);
 for i=1:size(u,1)
     w(i) = 1-u(i)-v(i);
 end

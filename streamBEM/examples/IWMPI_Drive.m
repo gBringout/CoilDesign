@@ -17,6 +17,9 @@ coil.reduction = 1;
 [coil.listNode,coil.listTriangle,coil.tri] = importMeshWavefront(fullfile('.','data','20x20_R135_H400.obj'));
 coil.center = [0 0 0];
 
+%% Numerical integration
+orderQuadrature = 2;
+
 %% Target point definition
 
 degreeMax = 5;
