@@ -301,11 +301,12 @@ elseif strcmp(optimizationType,'QP')
     disp('Quadratic Programming')
     % Optimisation parameter
     % YALMIP
-    % Here we try to minimize the inductance
+
+    % Here we try to minimize the dissipated power
     x = sdpvar(size(coil.L,2),1); % define the size of the objective
     Objective = x'*coil.R*x; % set the objective
     
-    % build the error constrains on the fields
+    % build the error constraints on the fields
     lr = zeros(1,size(coil.btarget,2));
     ur = zeros(1,size(coil.btarget,2));
     for j=1:size(coil.Ctarget,1)
@@ -322,28 +323,24 @@ elseif strcmp(optimizationType,'QP')
         end
     end
     
-    % boundary of the solution
-    lb = ones(size(coil.L,1),1)*-Inf;
-    ub = ones(size(coil.L,1),1)*Inf;
+    % Initialize the constraints object, with the error on the field
+    Constraints = [lr' <= coil.Ctarget*x <= ur'];
+    
+    % Constraint the solution on the boundaries of the mesh
     if coil.reduction
-        for i=1:size(coil.subBoundaries,1)
-            lb(i) = 0; %boundary of the mesh have to be null
-            ub(i) = 0; %boundary of the mesh have to be null
-        end
+        Constraints = [Constraints,x(1:size(coil.subBoundaries,1),1)==0];
     else
         index = 1;
         for i=1:size(coil.subBoundaries,1)
             for j=size(coil.subBoundaries(i).node,1)
-                lb(index) = 0; %boundary of the mesh have to be null
-                ub(index) = 0; %boundary of the mesh have to be null
+                Constraints = [Constraints,x(index,1)==0];
                 index = index+1;
             end
         end
     end
     
-    %Build the constrains object
-    Constraints = [lr' <= coil.Ctarget*x <= ur',...
-                   lb<=x<=ub];
+    % we could also constraints the power
+    %Constraints = [Constraints,x'*coil.R*x<=40000];
                
     
     % Set some options for YALMIP and solver
