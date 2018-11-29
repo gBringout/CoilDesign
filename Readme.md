@@ -9,7 +9,7 @@ The available techniques are:
 To work, this script required 3 externals scripts:
 * [SphericalHamornics](https://github.com/gBringout/SphericalHarmonics)
 * [regu](http://www.imm.dtu.dk/~pcha/Regutools/) package from C Hansen for the Tikhonov implementation
-* [YALMIP TOOLBOX](http://users.isy.liu.se/johanl/yalmip/)  from Johan Löfberg for the QP implementation 
+* [YALMIP TOOLBOX](http://users.isy.liu.se/johanl/yalmip/)  from Johan LÃ¶fberg for the QP implementation 
 
 To start, you have to adapt streamBEM/makeCoil6.m to your installation, and then run it.
 The definition of the wanted coils is done in a separate files. One files per coil.
@@ -37,7 +37,7 @@ This has been extended to evaluate the effect of induced current in surfaces clo
 
 is provided.
 
-Please refer yourself to [this publication](http://www.gael-bringout.com/public/Bringout%202014%20-%20Performance%20of%20shielded%20electromagnet%20-%20evaluation%20under%20low.pdf) and [my thesis](http://gael-bringout.com/public/DissGaelBringout_Online_Compressed.pdf) for more details.
+Please refer yourself to [this publication](http://www.gael-bringout.com/public/Bringout%202014%20-%20Performance%20of%20shielded%20electromagnet%20-%20evaluation%20under%20low.pdf) and [my thesis](https://zenodo.org/record/162417/) for more details.
 
 ## Iron core shaping ##
 Using a multipole expansion techniques, the shape of iron core magnet can be designed. This has been used in [this conference contribution](http://www.gael-bringout.com/public/Bringout%202015%20-%20Performance%20and%20safety%20evaluation%20of%20a%20human%20sized%20FFL%20imager%20concept.pdf) to design a human sized MPI FFL scanner.
