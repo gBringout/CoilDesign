@@ -22,25 +22,27 @@ R = zeros(size(node,2),size(node,2));
 
 conductorSurfaceResistance = rho/t;
 
-%activate the parallel function
-matlabVersion = version;
-matlabVersion = str2num(matlabVersion(1:3));
-if matlabVersion < 8.2
-    [TF,~] = license('checkout', 'Distrib_Computing_Toolbox');
-    if TF
-        schd = findResource('scheduler', 'configuration', 'local');
-        numWorkers = schd.ClusterSize;
-    end
+%activate the parallel function if available
+if license('test','Distrib_Computing_Toolbox')
+    matlabVersion = version;
+    matlabVersion = str2num(matlabVersion(1:3));
+    if matlabVersion < 8.2
+        [TF,~] = license('checkout', 'Distrib_Computing_Toolbox');
+        if TF
+            schd = findResource('scheduler', 'configuration', 'local');
+            numWorkers = schd.ClusterSize;
+        end
 
-    if matlabpool('size') == 0  && TF && numWorkers >1
-        % checking to see if the pool is already open and of we have the licence
-        % and at least 2 cores
-        matlabpool open
-    end
-elseif matlabVersion >= 8.2 
-    poolobj = gcp('nocreate'); % If no pool, do not create new one.
-	if isempty(poolobj)
-		parpool;
+        if matlabpool('size') == 0  && TF && numWorkers >1
+            % checking to see if the pool is already open and of we have the licence
+            % and at least 2 cores
+            matlabpool open
+        end
+    elseif matlabVersion >= 8.2 
+        poolobj = gcp('nocreate'); % If no pool, do not create new one.
+        if isempty(poolobj)
+            parpool;
+        end
     end
 end
 
