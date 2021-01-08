@@ -14,6 +14,9 @@ To work, this script required 3 externals scripts:
 To start, you have to adapt streamBEM/makeCoil6.m to your installation, and then run it.
 The definition of the wanted coils is done in a separate files. One files per coil.
 
+## Support ##
+Check the [wiki](https://github.com/gBringout/CoilDesign/wiki) or open a [discussion](https://github.com/gBringout/CoilDesign/discussions)!
+
 # Implemented design techniques #
 ## Wirepath ##
 The easiest approach to approximate coil centroids: simply defining loops of current at given positions, to make solenoids or gradient coils for example.
