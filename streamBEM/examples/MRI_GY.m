@@ -36,7 +36,7 @@ bs(3).coefficient = zeros(degreeMax+1,orderMax+1);
 
 % MRI Gradient dBz/dy
 targetCoil = 'dBzdy';
-bc(3).coefficient(2,2) = 0.020*rhoReference; % Drive
+bc(3).coefficient(2,2) = 0.020*rhoReference; % MRI - Gradient Y - Gradient field from Z field in Y direction
 
 B  = RebuildField7bis(bc,bs,rhoReference, rk,'sch');
 coil.btarget = [B(3,:)];

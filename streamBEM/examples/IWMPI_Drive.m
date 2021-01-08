@@ -36,7 +36,7 @@ bs(3).coefficient = zeros(degreeMax+1,orderMax+1);
 
 % Drive Y
 targetCoil = 'DriveY';
-bc(2).coefficient(1,1) = 0.015; % Drive
+bc(2).coefficient(1,1) = 0.015; % MPI - Drive Y - Homegeneous Field in Y direction
 
 B  = RebuildField7bis(bc,bs,rhoReference, rk,'sch');
 coil.btarget = [B(1,:) B(2,:) B(3,:)];

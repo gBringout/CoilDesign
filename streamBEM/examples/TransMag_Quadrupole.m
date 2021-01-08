@@ -36,8 +36,8 @@ bs(3).coefficient = zeros(degreeMax+1,orderMax+1);
 
 % Quadrupole
 targetCoil = 'Quad';
-bc(1).coefficient(2,2) = 0.5*rhoReference; % Quadrupole
-bs(2).coefficient(2,2) = -0.5*rhoReference; % Quadrupole
+bc(1).coefficient(2,2) = 0.5*rhoReference; % MPI - Quadrupole Field in X & Y direction
+bs(2).coefficient(2,2) = -0.5*rhoReference; % MPI - Quadrupole Field in X & Y direction
 
 B  = RebuildField7bis(bc,bs,rhoReference, rk,'sch');
 coil.btarget = [B(1,:) B(2,:) B(3,:)];

@@ -36,7 +36,7 @@ bs(3).coefficient = zeros(degreeMax+1,orderMax+1);
 
 % define the target ampltiude
 targetCoil = 'DriveZ';
-bc(3).coefficient(1,1) = 0.003; % Drive Y
+bc(3).coefficient(1,1) = 0.003; % MPI - Drive Z - Homogeneous Field in Z Direction
 
 B  = RebuildField7bis(bc,bs,rhoReference, rk,'sch');
 coil.btarget = [B(1,:) B(2,:) B(3,:)];
